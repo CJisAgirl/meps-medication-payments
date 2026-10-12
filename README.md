@@ -36,6 +36,7 @@ These are observed, edited/imputed survey payments. They do not establish prescr
 | [Sources](SOURCES.md) | Official documentation and data provenance |
 | [Scripts](scripts/) and [SQL](cohort.sql) | Download, preparation, survey analysis and verification |
 | [Tests](tests/) | Deterministic checks of classification, aggregation and payment methods |
+| [SAS implementation](sas/) | DATA step, PROC SQL and PROC SURVEYMEANS source for the main analysis; SAS execution pending |
 
 The [age supplement](results/extension-note.md) and [coverage appendix](results/coverage-appendix.md) retain secondary findings. All published data tables are aggregates; downloaded microdata and person-level intermediates stay local.
 
@@ -60,5 +61,7 @@ The runner checks tests, downloads the official files when absent, verifies pinn
 Open the local [report](results/research-brief.md) and check that [payment verification](results/payment-verification.json) reports `PASS`. The [source manifest](results/source-manifest.json) records source fingerprints; [R-session.txt](results/R-session.txt) records the R environment. An existing R library can be selected with `R_LIBS_USER`; `MEPS_RSCRIPT` can specify an alternative Rscript executable. No API key or restricted claims license is required.
 
 ## Methods demonstrated
+
+An optional [SAS version](sas/README.md) reconstructs the main cohort and provides survey estimates and reference comparisons. Its input conversion has been checked; actual SAS execution remains pending.
 
 Public health data management, SQL aggregation, complex survey inference, weighted distribution analysis, data quality checks, reproducible reporting and interpretation of observational evidence.
