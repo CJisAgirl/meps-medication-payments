@@ -1,0 +1,23 @@
+{
+  "source_person_records": 19140,
+  "source_prescription_records": 204550,
+  "positive_weight_persons": 18683,
+  "positive_weight_prescription_records": 202902,
+  "zero_weight_persons_excluded": 457,
+  "positive_weight_children": 3557,
+  "adult_persons": 15126,
+  "adult_primary_users": 800,
+  "adult_nonusers_retained": 14326,
+  "adult_target_records": 4368,
+  "adult_brand_only_users": 787,
+  "insulin_combination_records": 0,
+  "brand_fallback_records": 0,
+  "missing_generic_records_all_drugs": 7263,
+  "unresolved_insurance_adults": 0,
+  "unmatched_event_ids": 0,
+  "duplicate_person_ids": 0,
+  "duplicate_event_ids": 0,
+  "sql_vs_pandas_oop": "PASS",
+  "python": "3.12.14",
+  "pandas": "2.2.3"
+}

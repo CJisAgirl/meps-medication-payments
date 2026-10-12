@@ -1,0 +1,15 @@
+{
+  "full_design_strata": 105,
+  "full_design_psus": 264,
+  "full_design_df": 159,
+  "adult_design_df": 159,
+  "weighted_adult_population": 267165095.468308,
+  "manual_point_and_taylor_se_checks": 71,
+  "independent_checks": "PASS",
+  "reportable_rows": 58,
+  "suppressed_rows": 17,
+  "ci_proportions": "logit, domain design df",
+  "ci_means_ratios": "t, user-domain design df",
+  "survey_version": "4.5",
+  "R_version": "4.1.1"
+}

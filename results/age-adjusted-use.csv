@@ -1,0 +1,4 @@
+"group","metric","estimate","se","lower_95","upper_95","design_df","status"
+"Any private incl. TRICARE","age_adjusted_use_pct",4.98792162389801,0.253309713714282,4.51066257378959,5.51276266179678,155,"reportable"
+"Public only","age_adjusted_use_pct",6.01904614745571,0.448810125556753,5.19122821180255,6.96916828790474,155,"reportable"
+"Public only minus any private","age_adjusted_difference_pp",1.0311245235577,0.528669638599353,-0.0132026771110174,2.07545172422642,155,"reportable"

@@ -1,0 +1,16 @@
+{
+  "h256": {
+    "url": "https://meps.ahrq.gov/data_files/pufs/h256/h256dta.zip",
+    "sha256": "653891861ec18574b07f576915e6f9e423263fc947610dc34e1bd176feff7b40",
+    "bytes": 5803860,
+    "retrieved_at_utc": "2026-10-09T05:50:32.886253+00:00",
+    "overview": "https://meps.ahrq.gov/data_stats/download_data_files_detail.jsp?cboPufNumber=HC-256"
+  },
+  "h254a": {
+    "url": "https://meps.ahrq.gov/data_files/pufs/h254a/h254adta.zip",
+    "sha256": "8afe0228acf154e08d0c84c425494ce7511be85c1ea0e414b59ec6106717d818",
+    "bytes": 6647757,
+    "retrieved_at_utc": "2026-10-09T05:50:33.076286+00:00",
+    "overview": "https://meps.ahrq.gov/data_stats/download_data_files_detail.jsp?cboPufNumber=HC-254A"
+  }
+}

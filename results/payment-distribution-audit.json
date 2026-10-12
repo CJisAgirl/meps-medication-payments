@@ -1,0 +1,18 @@
+{
+  "status": "PASS",
+  "plan": "METHODS.md#payment-distribution",
+  "adult_users": 800,
+  "zero_total_payment_users": 1,
+  "zero_oop_users": 210,
+  "user_domain_df": 138,
+  "independent_mean_proportion_point_se_checks": 9,
+  "independent_interval_checks": 9,
+  "independent_quantile_point_checks": 3,
+  "same_original_mean_and_se": true,
+  "band_counts_partition_users": true,
+  "quantile_method": "inverse weighted CDF; beta Woodruff intervals",
+  "survey_version": "4.5",
+  "reportable": 9,
+  "flagged": 0,
+  "withheld": 0
+}

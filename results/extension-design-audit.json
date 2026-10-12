@@ -1,0 +1,24 @@
+{
+  "extension_rows": 122,
+  "reportable": 59,
+  "suppressed": 63,
+  "independent_mean_ratio_checks": 120,
+  "reporting_gate": "PASS",
+  "age_adjustment": {
+    "status": "estimated: age-adjusted association only",
+    "support_gate": true,
+    "formula": "user ~ natural spline(age, df=3) + annual coverage",
+    "spline_knots": [44, 65],
+    "boundary_knots": [18, 85],
+    "reference_adults": 14053,
+    "reference_users": 795,
+    "converged": true,
+    "rank": 5,
+    "df": 155,
+    "point_reconstruction": "PASS",
+    "two_component_covariance_reconstruction": "PASS",
+    "intercept_only_crude_check": "PASS",
+    "predictive_margins_method": "survey::svypredmeans; model plus target-distribution variance components",
+    "adjusted_spending": "not estimated; requires separate plan"
+  }
+}

@@ -1,0 +1,21 @@
+RXDRGNAM,RXNAME,ingredient,primary_flag,brand_flag,mapping_method,records,unweighted_people
+DULAGLUTIDE,TRULICITY,dulaglutide,1,1,generic_exact,649,131
+DULAGLUTIDE,TRULICITY 0.75/0.5,dulaglutide,1,1,generic_exact,1,1
+LIRAGLUTIDE,SAXENDA,liraglutide,1,1,generic_exact,3,2
+LIRAGLUTIDE,VICTOZA,liraglutide,1,1,generic_exact,59,24
+SEMAGLUTIDE,OZEMPIC,semaglutide,1,1,generic_exact,1995,392
+SEMAGLUTIDE,RYBELSUS,semaglutide,1,1,generic_exact,226,49
+SEMAGLUTIDE,SEMA/METHYL,semaglutide,1,0,generic_exact,7,3
+SEMAGLUTIDE,SEMAGLUTIDE,semaglutide,1,0,generic_exact,36,9
+SEMAGLUTIDE,SEMAGLUTIDE 5000 MCG/ML / L-CARNITINE 100 MG/ML,semaglutide,1,0,generic_exact,10,2
+SEMAGLUTIDE,SEMAGLUTIDE/CYANOCOBALAMIN 5MG-0.4MG/ML,semaglutide,1,0,generic_exact,2,1
+SEMAGLUTIDE,WEGOVY,semaglutide,1,1,generic_exact,285,59
+TIRZEPATIDE,MOUNJARO,tirzepatide,1,1,generic_exact,965,167
+TIRZEPATIDE,TIRZEPATIDE 2.5MG/0.1ML,tirzepatide,1,0,generic_exact,1,1
+TIRZEPATIDE,TIRZEPATIDE/PYRIDOXINE 2.5MG/0.4ML,tirzepatide,1,0,generic_exact,1,1
+TIRZEPATIDE,TIRZEPATIDE/PYRIDOXINE 5MG/0.2ML,tirzepatide,1,0,generic_exact,1,1
+TIRZEPATIDE,ZEPBOUND,tirzepatide,1,1,generic_exact,142,37
+TIRZEPATIDE,ZEPBOUND 2.5MG/0.5 ML,tirzepatide,1,1,generic_exact,1,1
+TIRZEPATIDE,ZEPBOUND 2.5MG/0.5ML,tirzepatide,1,1,generic_exact,1,1
+TIRZEPATIDE,ZEPBOUND 5 MG/0.5 ML INJ,tirzepatide,1,1,generic_exact,1,1
+TIRZEPATIDE,ZEPBOUND INJ,tirzepatide,1,1,generic_exact,1,1

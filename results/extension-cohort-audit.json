@@ -1,0 +1,41 @@
+{
+  "adult_n": 15126,
+  "user_n": 800,
+  "monthly_history_counts": {
+    "all_12": {
+      "adults": 12686,
+      "users": 764
+    },
+    "incomplete": {
+      "adults": 195,
+      "users": 2
+    },
+    "none_12": {
+      "adults": 1051,
+      "users": 5
+    },
+    "some_months": {
+      "adults": 1194,
+      "users": 29
+    }
+  },
+  "source_history_counts": {
+    "changed_sources": {
+      "adults": 1433,
+      "users": 103
+    },
+    "not_all_12": {
+      "adults": 2440,
+      "users": 36
+    },
+    "stable_sources": {
+      "adults": 11253,
+      "users": 661
+    }
+  },
+  "incomplete_history_with_out_of_scope_months": 195,
+  "max_event_payment_reconciliation_usd": 9.094947017729282e-13,
+  "sql_vs_pandas_components": "PASS",
+  "base_cohort_reconciliation": "PASS",
+  "monthly_source_consistency": "PASS"
+}

@@ -1,0 +1,11 @@
+"age","group","adults","users","nonusers"
+"18-34","Any private incl. TRICARE",2028,24,2004
+"18-34","Public only",758,16,742
+"35-49","Any private incl. TRICARE",2357,97,2260
+"35-49","Public only",604,26,578
+"50-64","Any private incl. TRICARE",2581,214,2367
+"50-64","Public only",790,95,695
+"65-74","Any private incl. TRICARE",1192,104,1088
+"65-74","Public only",1613,117,1496
+"75+","Any private incl. TRICARE",751,33,718
+"75+","Public only",1379,69,1310

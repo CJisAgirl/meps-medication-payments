@@ -1,0 +1,21 @@
+R version 4.1.1 (2021-08-10)
+Platform: aarch64-apple-darwin20 (64-bit)
+Running under: macOS 26.6.2
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/lib/libRblas.0.dylib
+LAPACK: /Library/Frameworks/R.framework/Versions/4.1-arm64/Resources/lib/libRlapack.dylib
+
+locale:
+[1] C.UTF-8/C.UTF-8/C.UTF-8/C/C.UTF-8/C.UTF-8
+
+attached base packages:
+[1] grid      stats     graphics  grDevices utils     datasets  methods
+[8] base
+
+other attached packages:
+[1] jsonlite_1.7.2  survey_4.5      survival_3.2-11 Matrix_1.3-4
+
+loaded via a namespace (and not attached):
+[1] compiler_4.1.1  DBI_1.1.1       Rcpp_1.0.7      splines_4.1.1
+[5] lattice_0.20-44 mitools_2.7
