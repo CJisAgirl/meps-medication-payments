@@ -27,7 +27,7 @@ def payer(source, metric):
 sources = ['Self/family', 'Private insurance', 'Medicare', 'Medicaid', 'TRICARE', 'Other sources']
 en_payers = '\n'.join(f"| {s} | {show(payer(s,'payment_share_pct'))} | {show(payer(s,'annual_payment_usd'),0)} |" for s in sources)
 payer_precision_note = (
-    ' An asterisk (*) marks limited precision, not statistical significance.'
+    ' *Limited precision under the reporting criteria in Methods.'
     if any(payer(s, metric)['status'].startswith('flagged:')
            for s in sources for metric in ['payment_share_pct', 'annual_payment_usd'])
     else ''
@@ -42,42 +42,42 @@ bands = [('zero_oop_pct','$0'), ('oop_0_100_pct','Over $0 through $100'),
 en_bands = '\n'.join(f"| {en} | {rows[k]['sample_in_category']} | {show(rows[k])} |" for k,en in bands)
 
 # Fail explicitly if an unsupported primary finding would otherwise enter prose.
-assert all(rows[k]['status']=='reportable' for k in ['mean_oop','median_oop','zero_oop_pct','oop_over_1000_pct'])
+assert all(rows[k]['status']=='reportable' for k in ['mean_oop','median_oop','p75_oop','p90_oop','zero_oop_pct','oop_over_1000_pct'])
 mean = float(rows['mean_oop']['estimate'])
 median = float(rows['median_oop']['estimate'])
 zero = float(rows['zero_oop_pct']['estimate'])
 high = float(rows['oop_over_1000_pct']['estimate'])
 self_share = float(payer('Self/family','payment_share_pct')['estimate'])
 
-brief = f'''# Who paid for GLP-1 medicines and tirzepatide, and what did users pay themselves?
+brief = f'''# Payment Sources and Annual Out-of-Pocket Spending for GLP-1 Receptor Agonists and Tirzepatide
 
-**MEPS 2024 | Recorded payment sources and annual self/family payments**
+**Medical Expenditure Panel Survey, 2024**
 
-The population is adults with at least one recorded target-medicine purchase/receipt: **{audit['adult_users']} sampled users** from 15,126 sampled adults. Records are aggregated within person before survey weighting; repeated fills do not become independent people. The data were released in July/August 2026 and describe 2024.
+This descriptive analysis included **{audit['adult_users']} adult users** with at least one recorded target-medicine acquisition among 15,126 sampled adults. Users were included regardless of treatment indication. Prescription payments were aggregated within person over calendar year 2024 and analyzed using the MEPS complex survey design. The source files were released in July and August 2026.
 
-**Main finding:** self/family payments represented {self_share:.2f}% of weighted target-medicine payments, while users' annual self/family payments had a mean of ${mean:,.0f} and a median of ${median:,.2f}. An estimated {zero:.2f}% of users had zero self/family payments and {high:.2f}% paid more than $1,000. The aggregate payment share and the distribution across people answer different questions; neither establishes affordability.
+**Key findings:** Self/family payments accounted for {self_share:.2f}% of total target-medicine payments. Mean annual self/family spending was ${mean:,.2f}, compared with a median of ${median:,.2f}. An estimated {zero:.2f}% of users had no self/family payments, and {high:.2f}% paid more than $1,000.
 
-## 1. Who paid the recorded medicine costs?
+## 1. Payment sources
 
 | Payment source | Share of all target payments, % (95% CI) | Annual USD per user (95% CI) |
 | --- | ---: | ---: |
 {en_payers}
 
-Payment shares are calculated as each source's survey-weighted total divided by total survey-weighted payments across all sources. They are not averages of individual payment percentages. Mean annual payments include **all {audit['adult_users']} users**, including those with zero payments from a given source. Users may have payments from multiple sources.{payer_precision_note}
+Payment shares are ratios of survey-weighted source totals to total payments. Source-specific means include all {audit['adult_users']} users, including zero payments; payment sources may overlap within individuals.{payer_precision_note}
 
-These are edited/imputed survey payment records, not raw adjudicated claims or a measure of benefit eligibility. Payments exclude manufacturer rebates to payers. [Payment-source figure](payment-sources.png).
+[Payment-source figure](payment-sources.png).
 
-## 2. How much did an individual user pay over the year?
+## 2. Annual self/family spending
 
 | Summary of annual self/family payments | USD (95% CI) |
 | --- | ---: |
 {en_distribution}
 
-The median is the first dollar amount where the weighted cumulative proportion reaches 50%; the 75th and 90th percentiles use 75% and 90%. Ties mean the percentage strictly above a percentile need not be exactly 50%, 25% or 10%. These thresholds are not average costs among the highest-spending users. The mean exceeds the median because the payment distribution has a substantial upper tail; the mean alone does not describe a typical user.
+Mean annual self/family spending was ${mean:,.2f}, compared with a median of ${median:,.2f}, indicating a right-skewed distribution. The 75th and 90th percentiles were ${float(rows['p75_oop']['estimate']):,.2f} and ${float(rows['p90_oop']['estimate']):,.2f}, respectively.
 
-All summaries include zero self/family payments. They measure recorded calendar-year payments, not the price of 12 continuous treatment months, a monthly copay, or spending on all medical care.
+Estimates include zero payments and capture annual spending on the target medicines. Treatment duration was not standardized to 12 months.
 
-## 3. How common were zero or larger self/family payments?
+## 3. Distribution of annual self/family spending
 
 | Annual self/family payments | Sample users | Weighted share of users, % (95% CI) |
 | --- | ---: | ---: |
@@ -85,22 +85,24 @@ All summaries include zero self/family payments. They measure recorded calendar-
 
 ![Annual self/family payment distribution](selfpay-distribution.png)
 
-The five bands are mutually exclusive and include all {audit['adult_users']} users; raw counts and weighted percentages need not match by simple division. $1,000 is a presentation cutoff, not a validated financial-hardship threshold. Zero self/family payments do not necessarily mean an insurer paid the entire bill: {audit['zero_total_payment_users']} user has zero recorded total payments across all target records and remains in the denominator.
+Annual self/family spending was zero for {zero:.2f}% of users and exceeded $1,000 for {high:.2f}%. Dollar bands describe spending levels; affordability relative to household income was not assessed.
 
-## What these results can and cannot answer
+## Study limitations
 
-They describe **observed payment sources and the distribution of dollar payments among recorded users**. They do not identify people who did not obtain a medicine because of price, denial reasons, prescription-benefit terms, income-relative hardship, treatment effectiveness, or a causal effect of insurance. A lower mean in one insurance group would not by itself establish better coverage.
+MEPS payment records undergo editing and imputation and do not capture the full claims-adjudication process. Manufacturer rebates to payers are not captured, so reported payments are not net payer costs after rebates. The analysis does not assess benefit eligibility, denial reasons, cost-related nonreceipt of medicines or treatment effectiveness. Insurance comparisons are descriptive associations.
 
-Monthly insurance histories cannot be aligned to each refill's purchase month in these public files. Their descriptive results are in a [coverage-methods appendix](coverage-appendix.md), not evidence of purchase-specific reimbursement. Detailed ages and the age-only use model remain [supplementary analyses](extension-note.md).
+Public-file timing variables do not support linking each medication acquisition to its purchase-month insurance coverage. Monthly histories are reported in the [coverage appendix](coverage-appendix.md); age and annual-coverage analyses are reported in the [supplement](extension-note.md).
 
-## Methods, checks and reproduction
+## Statistical methods and reproducibility
 
-The [analysis methods](../METHODS.md#analysis-sequence) was written after prior results were seen and before the new distribution was estimated. This is not an original preregistration. Use the full stratified, clustered survey design, then the adult-user domain; mean/proportion SEs use Taylor linearization, proportions have beta CIs, and quantiles use inverse weighted CDFs with beta-Woodruff CIs. All descriptive means, dollar ratios and person proportions use the relevant denominator (at least 60 people) and AHRQ precision categories: RSE below 30% is reportable, 30–50% is flagged with *, and above 50% is withheld. The rare-proportion exception applies only to person proportions, not dollar ratios. There is no separate 100-adult or 30-positive-payer requirement. Quantile support is assessed separately. No person is deleted because an estimate is withheld.
+Estimates used person weights, strata and primary sampling units, with domain estimation retaining the full survey design. Mean and proportion standard errors used Taylor linearization. Proportions used beta confidence intervals; quantiles used the inverse weighted empirical distribution with beta-Woodruff intervals. Descriptive estimates followed the shared AHRQ-based reporting framework, with separate support checks for quantiles; specifications are provided in [Methods](../METHODS.md#reporting-framework).
 
-The full run includes 16 Python tests and 13 R payment-helper tests; the new distribution has {audit['independent_mean_proportion_point_se_checks']} independent point/Taylor-SE checks, {audit['independent_interval_checks']} interval checks and {audit['independent_quantile_point_checks']} quantile point checks. Python independently checks weighted bands/quantiles, denominators and reconciliation. The cohort, payment definitions, weighted point estimators and Taylor variances are unchanged; tables use the unified reporting criteria and descriptive person proportions use beta intervals. See the [reproduction instructions](../README.md#reproduce).
+The payment-distribution analysis was specified after reviewing the initial results and before estimating the quantiles and payment bands. The [analysis sequence](../METHODS.md#analysis-sequence) documents this exploratory development and subsequent reporting revisions.
 
+Independent calculations checked weighted estimates, Taylor standard errors, confidence intervals and quantile points. The distribution analysis includes {audit['independent_mean_proportion_point_se_checks']} point/standard-error checks, {audit['independent_interval_checks']} interval checks and {audit['independent_quantile_point_checks']} quantile-point checks. [Reproduction instructions](../README.md#reproduce) and aggregate audit outputs are available below.
 
 [Distribution results](payment-distribution.csv) · [Distribution audit](payment-distribution-audit.json) · [Cross-output audit](payment-verification.json) · [Methods](../METHODS.md) · [Sources](../SOURCES.md)
 '''
+
 (ROOT/'results/research-brief.md').write_text(brief)
 print('Generated results/research-brief.md.')

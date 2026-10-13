@@ -1,14 +1,14 @@
 # Supplementary age, insurance and payment analyses
 
-The [main report](research-brief.md) focuses on payment sources and user spending. These supplementary estimates use the same descriptive reporting framework. The age and monthly-history questions were developed after examining initial results; they are not original preregistrations.
+These exploratory analyses extend the [main payment report](research-brief.md) to age and insurance subgroups. The questions were developed after reviewing initial results; their sequence is documented in [Methods](../METHODS.md#analysis-sequence).
 
 ## Reporting framework
 
-All descriptive means, ratios and person proportions use one AHRQ-based reporting framework. Require at least 60 unweighted people in the relevant analysis denominator, positive survey-design degrees of freedom, and finite estimates and uncertainty. For observed-use proportions the denominator is adults; for conditional spending and payer amounts/ratios it is medication users, including zero payments. Positive-payer counts remain diagnostics, with no separate minimum. RSE below 30% is reportable; 30% through 50% is displayed with an asterisk; above 50% is withheld. Only person proportions can use the AHRQ rare-proportion exception (95% upper bound at most 10%, displayed with an asterisk). A payer share is a ratio of dollars and never uses that exception. Boundary/degenerate estimates require review. An asterisk indicates limited precision, not statistical significance. No records are removed because an estimate is withheld.
+Estimates follow the [reporting framework](../METHODS.md#reporting-framework). Asterisks and triangular plot markers denote limited precision. Withheld estimates are identified by their sample-size or precision criterion.
 
 ## Age and annual coverage
 
-The five age groups are 18–34, 35–49, 50–64, 65–74 and 75+. Any-private annual coverage includes TRICARE/CHAMPVA and mixed private/public coverage under the MEPS definition. Use proportions include all adults in each group; spending means include observed users and retain zero payments. These denominators differ, so one outcome may be displayed while another is withheld.
+Age groups were 18–34, 35–49, 50–64, 65–74 and 75+. Under the MEPS definition, any-private annual coverage includes TRICARE/CHAMPVA and mixed private/public coverage. Use proportions are estimated among all adults in each group; spending means are estimated among medication users, including zero payments.
 
 ![Age and annual coverage](detailed-age.png)
 
@@ -37,11 +37,11 @@ The five age groups are 18–34, 35–49, 50–64, 65–74 and 75+. Any-private 
 
 ## Monthly histories
 
-See the [coverage appendix](coverage-appendix.md). These categories do not establish purchase-specific drug coverage.
+The [coverage appendix](coverage-appendix.md) presents annual outcomes by monthly insurance history and describes the timing limitations of these measures.
 
 ## Recorded payment sources
 
-Sum ten edited/imputed source-payment fields over target prescriptions within each person. Other sources combine VA/CHAMPVA, other federal, state/local, workers' compensation and other insurance. Source-specific means include all observed adult users, including zero payments. Shares divide each weighted source total by weighted total payments. Positive-payment contributors can overlap and are diagnostic counts, not separate reporting gates.
+Ten edited/imputed source-payment fields were aggregated within person. Other sources combine VA/CHAMPVA, other federal, state/local, workers' compensation and other insurance. Means include all adult medication users, including zero payments; shares are ratios of weighted source totals to total payments. Counts indicate users with positive payments from each source and may overlap.
 
 | Payment source | Users with positive payment | Annual USD per user (95% CI) | Share of payments, % (95% CI) |
 | --- | ---: | ---: | ---: |
@@ -54,21 +54,21 @@ Sum ten edited/imputed source-payment fields over target prescriptions within ea
 
 ![Payment sources](payment-sources.png)
 
-Do not add confidence limits or renormalize visible shares if a component is withheld. Zero payment does not establish denial. Payments exclude manufacturer rebates to payers; these edited/imputed survey records are not raw adjudicated claims.
+Payment shares retain the all-source denominator when individual estimates are withheld. Manufacturer rebates are not captured. The survey records support payment estimates rather than claim-level adjudication or denial assessment.
 
 ## Age-adjusted association
 
-The separate survey quasibinomial model uses a natural age spline (3 df) and annual coverage with no interaction. It standardizes any-private and public-only predictions to their combined weighted adult population; uninsured adults remain in descriptive estimates but are outside this model. Model status: estimated: age-adjusted association only.
+A survey-weighted quasibinomial model included a natural age spline (3 df) and annual coverage, without an interaction. Predictive margins were standardized to the combined weighted population of adults with any-private or public-only coverage. Uninsured adults were retained in descriptive analyses and excluded from this model.
 
-The model retains its prespecified support checks (at least 100 adults, 5 users and 5 nonusers per coverage-by-age cell), convergence, rank and finite covariance checks. Those are model-feasibility diagnostics, not descriptive reporting thresholds. Small descriptive cells can contribute to a pooled model with a smooth common age relationship. The model does not create new observations.
+Model feasibility required at least 100 adults, 5 users and 5 nonusers per coverage-by-age cell, together with convergence, full rank and finite covariance. These checks were specified for the pooled spline model separately from descriptive reporting criteria.
 
 | Group or comparison | Metric | Estimate (95% CI) |
 | --- | --- | ---: |
-| Any private incl. TRICARE | age_adjusted_use_pct | 4.99 (4.51–5.51) |
-| Public only | age_adjusted_use_pct | 6.02 (5.19–6.97) |
-| Public only minus any private | age_adjusted_difference_pp | 1.03 (-0.01–2.08) |
+| Any private incl. TRICARE | Age-adjusted use, % | 4.99 (4.51–5.51) |
+| Public only | Age-adjusted use, % | 6.02 (5.19–6.97) |
+| Public only minus any private | Difference, percentage points | 1.03 (-0.01–2.08) |
 
-Marginal percentages use the unified denominator/precision framework, with model-based logit-delta intervals. The public-minus-private contrast uses both margins' covariance and is not screened by RSE because a signed difference can legitimately be near zero. Both margins must be displayable. Only age is adjusted; disease burden, indication, income, drug mix and selection can differ. No causal insurance effect or adjusted spending model is estimated.
+Marginal percentages use the shared denominator and precision criteria with model-based logit-delta intervals. The public-minus-private contrast incorporates covariance between margins and is reported when both margins meet the reporting criteria; no RSE threshold is applied to the signed contrast. Adjustment is limited to age. Disease burden, indication, income, medication mix and selection remain potential sources of confounding. The estimates represent age-adjusted associations; spending was not modeled.
 
 ## Checks
 
@@ -76,7 +76,7 @@ There are 122 descriptive rows: 65 displayed without a flag, 13 displayed with a
 
 ## Payer components by age
 
-Every mean includes all users in its age group, including zero source payments. Display decisions use the same descriptive rules.
+Age-specific means include all medication users within each group, including zero payments from the source. Reporting follows the shared precision framework.
 
 ### 18-34
 

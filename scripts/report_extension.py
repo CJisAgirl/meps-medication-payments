@@ -43,18 +43,21 @@ def payer_table(age):
 
 missing=cohort['monthly_history_counts'].get('incomplete',{'adults':0,'users':0})
 model=design['age_adjustment']
-adjusted_table='\n'.join(f"| {r['group']} | {r['metric']} | {show(r)} |" for r in adjusted)
+metric_labels = {'age_adjusted_use_pct': 'Age-adjusted use, %',
+                 'age_adjusted_difference_pp': 'Difference, percentage points'}
+adjusted_table='\n'.join(f"| {r['group']} | {metric_labels[r['metric']]} | {show(r)} |" for r in adjusted)
+model_note = '' if model['status'].startswith('estimated') else f" Model estimation status: {model['status']}."
 age_payments='\n\n'.join(f"### {age}\n\n| Payment source | Users with positive payment | Annual USD per user (95% CI) | Share of payments, % (95% CI) |\n| --- | ---: | ---: | ---: |\n{payer_table(age)}" for age in ['18-34','35-49','50-64','65-74','75+'])
-rules="All descriptive means, ratios and person proportions use one AHRQ-based reporting framework. Require at least 60 unweighted people in the relevant analysis denominator, positive survey-design degrees of freedom, and finite estimates and uncertainty. For observed-use proportions the denominator is adults; for conditional spending and payer amounts/ratios it is medication users, including zero payments. Positive-payer counts remain diagnostics, with no separate minimum. RSE below 30% is reportable; 30% through 50% is displayed with an asterisk; above 50% is withheld. Only person proportions can use the AHRQ rare-proportion exception (95% upper bound at most 10%, displayed with an asterisk). A payer share is a ratio of dollars and never uses that exception. Boundary/degenerate estimates require review. An asterisk indicates limited precision, not statistical significance. No records are removed because an estimate is withheld."
+rules='Estimates follow the [reporting framework](../METHODS.md#reporting-framework). Asterisks and triangular plot markers denote limited precision. Withheld estimates are identified by their sample-size or precision criterion.'
 appendix=f'''# Appendix: monthly insurance histories
 
-These descriptive histories cannot date every refill or establish drug-specific reimbursement. Read the [main payment report](research-brief.md) for observed payment sources.
+This appendix describes medication use and annual self/family spending by monthly insurance history. Recorded payment sources are presented in the [main report](research-brief.md).
 
 {rules}
 
 ## Complete monthly histories
 
-All 12 monthly insurance indicators must be explicitly known. Coverage at some time in every month does not establish coverage on every day. Unknown and out-of-scope values are never converted to uninsured. {missing['adults']} adults, including {missing['users']} users, have incomplete histories and are excluded only from these complete-history comparisons; they remain in the main cohort. {cohort['incomplete_history_with_out_of_scope_months']} incomplete histories include out-of-scope months.
+Complete-history comparisons required valid insurance indicators for all 12 months. The monthly measure captures coverage at any time within a month. Incomplete histories were excluded from these comparisons and retained in the main cohort: {missing['adults']} adults, including {missing['users']} medication users; {cohort['incomplete_history_with_out_of_scope_months']} incomplete histories included out-of-scope months. Unknown or out-of-scope values were classified as missing rather than uninsured. Use proportions are estimated among adults; spending means are estimated among medication users, including zero payments.
 
 | Monthly history | Sample users / adults | Observed use, % (95% CI) | Annual OOP per user, USD (95% CI) |
 | --- | ---: | ---: | ---: |
@@ -62,7 +65,7 @@ All 12 monthly insurance indicators must be explicitly known. Coverage at some t
 
 ## Source combinations among people covered in every month
 
-Preserve simultaneous private, TRICARE/CHAMPVA, Medicare, Medicaid/SCHIP, VA and other public sources. A changed combination is not necessarily a lapse in coverage, and a constant combination does not exclude a change of plan within one source type.
+Monthly source combinations retain simultaneous private, TRICARE/CHAMPVA, Medicare, Medicaid/SCHIP, VA and other public coverage. Source-mix changes capture changes across these categories, rather than plan-level switching or daily gaps in coverage.
 
 | Source history | Sample users / adults | Observed use, % (95% CI) | Annual OOP per user, USD (95% CI) |
 | --- | ---: | ---: | ---: |
@@ -70,15 +73,15 @@ Preserve simultaneous private, TRICARE/CHAMPVA, Medicare, Medicaid/SCHIP, VA and
 
 ![Monthly insurance histories](monthly-insurance.png)
 
-Triangles and asterisks indicate limited precision. Withheld values are not zero. A use proportion can be displayed while the corresponding user-only spending mean is withheld because their denominators differ.
+## Timing and interpretation
 
-PURCHRD identifies a survey round; RXBEGMM/RXBEGYRX identify first use and can carry forward across records. They cannot date every refill. Annual payments are not spread evenly across months. These results do not identify formularies, denials, unmet need or causal effects.
+PURCHRD identifies the survey round, while RXBEGMM/RXBEGYRX describe first use and may carry forward across records. These variables do not establish the purchase month of each refill. Annual payments were not allocated to individual months. The comparisons therefore describe annual spending by insurance history, without identifying purchase-specific reimbursement, formulary restrictions, denials or unmet need.
 
 Sources: [HC-256 insurance](https://meps.ahrq.gov/data_stats/download_data/pufs/h256/h256doc.shtml), [HC-254A timing](https://meps.ahrq.gov/data_stats/download_data/pufs/h254a/h254adoc.shtml), [AHRQ precision](https://meps.ahrq.gov/survey_comp/precision_guidelines.shtml).
 '''
 text=f'''# Supplementary age, insurance and payment analyses
 
-The [main report](research-brief.md) focuses on payment sources and user spending. These supplementary estimates use the same descriptive reporting framework. The age and monthly-history questions were developed after examining initial results; they are not original preregistrations.
+These exploratory analyses extend the [main payment report](research-brief.md) to age and insurance subgroups. The questions were developed after reviewing initial results; their sequence is documented in [Methods](../METHODS.md#analysis-sequence).
 
 ## Reporting framework
 
@@ -86,7 +89,7 @@ The [main report](research-brief.md) focuses on payment sources and user spendin
 
 ## Age and annual coverage
 
-The five age groups are 18–34, 35–49, 50–64, 65–74 and 75+. Any-private annual coverage includes TRICARE/CHAMPVA and mixed private/public coverage under the MEPS definition. Use proportions include all adults in each group; spending means include observed users and retain zero payments. These denominators differ, so one outcome may be displayed while another is withheld.
+Age groups were 18–34, 35–49, 50–64, 65–74 and 75+. Under the MEPS definition, any-private annual coverage includes TRICARE/CHAMPVA and mixed private/public coverage. Use proportions are estimated among all adults in each group; spending means are estimated among medication users, including zero payments.
 
 ![Age and annual coverage](detailed-age.png)
 
@@ -96,11 +99,11 @@ The five age groups are 18–34, 35–49, 50–64, 65–74 and 75+. Any-private 
 
 ## Monthly histories
 
-See the [coverage appendix](coverage-appendix.md). These categories do not establish purchase-specific drug coverage.
+The [coverage appendix](coverage-appendix.md) presents annual outcomes by monthly insurance history and describes the timing limitations of these measures.
 
 ## Recorded payment sources
 
-Sum ten edited/imputed source-payment fields over target prescriptions within each person. Other sources combine VA/CHAMPVA, other federal, state/local, workers' compensation and other insurance. Source-specific means include all observed adult users, including zero payments. Shares divide each weighted source total by weighted total payments. Positive-payment contributors can overlap and are diagnostic counts, not separate reporting gates.
+Ten edited/imputed source-payment fields were aggregated within person. Other sources combine VA/CHAMPVA, other federal, state/local, workers' compensation and other insurance. Means include all adult medication users, including zero payments; shares are ratios of weighted source totals to total payments. Counts indicate users with positive payments from each source and may overlap.
 
 | Payment source | Users with positive payment | Annual USD per user (95% CI) | Share of payments, % (95% CI) |
 | --- | ---: | ---: | ---: |
@@ -108,19 +111,19 @@ Sum ten edited/imputed source-payment fields over target prescriptions within ea
 
 ![Payment sources](payment-sources.png)
 
-Do not add confidence limits or renormalize visible shares if a component is withheld. Zero payment does not establish denial. Payments exclude manufacturer rebates to payers; these edited/imputed survey records are not raw adjudicated claims.
+Payment shares retain the all-source denominator when individual estimates are withheld. Manufacturer rebates are not captured. The survey records support payment estimates rather than claim-level adjudication or denial assessment.
 
 ## Age-adjusted association
 
-The separate survey quasibinomial model uses a natural age spline (3 df) and annual coverage with no interaction. It standardizes any-private and public-only predictions to their combined weighted adult population; uninsured adults remain in descriptive estimates but are outside this model. Model status: {model['status']}.
+A survey-weighted quasibinomial model included a natural age spline (3 df) and annual coverage, without an interaction. Predictive margins were standardized to the combined weighted population of adults with any-private or public-only coverage. Uninsured adults were retained in descriptive analyses and excluded from this model.{model_note}
 
-The model retains its prespecified support checks (at least 100 adults, 5 users and 5 nonusers per coverage-by-age cell), convergence, rank and finite covariance checks. Those are model-feasibility diagnostics, not descriptive reporting thresholds. Small descriptive cells can contribute to a pooled model with a smooth common age relationship. The model does not create new observations.
+Model feasibility required at least 100 adults, 5 users and 5 nonusers per coverage-by-age cell, together with convergence, full rank and finite covariance. These checks were specified for the pooled spline model separately from descriptive reporting criteria.
 
 | Group or comparison | Metric | Estimate (95% CI) |
 | --- | --- | ---: |
 {adjusted_table}
 
-Marginal percentages use the unified denominator/precision framework, with model-based logit-delta intervals. The public-minus-private contrast uses both margins' covariance and is not screened by RSE because a signed difference can legitimately be near zero. Both margins must be displayable. Only age is adjusted; disease burden, indication, income, drug mix and selection can differ. No causal insurance effect or adjusted spending model is estimated.
+Marginal percentages use the shared denominator and precision criteria with model-based logit-delta intervals. The public-minus-private contrast incorporates covariance between margins and is reported when both margins meet the reporting criteria; no RSE threshold is applied to the signed contrast. Adjustment is limited to age. Disease burden, indication, income, medication mix and selection remain potential sources of confounding. The estimates represent age-adjusted associations; spending was not modeled.
 
 ## Checks
 
@@ -128,7 +131,7 @@ There are {design['extension_rows']} descriptive rows: {design['reportable']} di
 
 ## Payer components by age
 
-Every mean includes all users in its age group, including zero source payments. Display decisions use the same descriptive rules.
+Age-specific means include all medication users within each group, including zero payments from the source. Reporting follows the shared precision framework.
 
 {age_payments}
 '''

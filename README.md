@@ -17,7 +17,7 @@ The population includes adult users of the target medicines regardless of indica
 - Link AHRQ person and prescription files; audit exact ingredient and brand mappings and exclude insulin combinations.
 - Aggregate repeated prescription records with SQL while retaining users with zero self/family payments.
 - Estimate payer shares, annual mean payments, weighted quantiles and payment-band proportions using survey weights, strata and primary sampling units.
-- Apply measure-specific precision rules and preserve reasons for withholding estimates.
+- Apply a shared descriptive precision framework, with separate quantile-support checks, and record reasons for withholding estimates.
 - Reconstruct selected weighted estimates and survey variances independently and reconcile payment components and denominators.
 - Examine age, annual coverage and monthly insurance histories as supplementary descriptive analyses.
 

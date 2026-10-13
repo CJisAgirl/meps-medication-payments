@@ -2,25 +2,25 @@
 
 ## Cohort and medication definition
 
-Link the MEPS full-year person file to prescribed medicines using DUPERSID. Build the full positive-weight survey design before selecting adults and observed medication users. People without a target record remain in observed-use denominators; spending summaries are conditional on observed use and retain zero payments.
+The MEPS full-year person file was linked to prescribed-medicine records using DUPERSID. The full positive-weight survey design was specified before selecting adult and medication-user domains. Use proportions include adults without target-medicine records; spending summaries include medication users with zero payments.
 
 The primary medication definition uses exact normalized generic names for GLP-1 receptor agonists and tirzepatide, excluding insulin combinations. Brand names are checked against an explicit whitelist; missing generic names and conflicting labels are treated separately. An insulin combination is not reclassified by a brand fallback. The mapping audit preserves observed labels and decisions. Indication, authenticity and compounded status cannot be established from these fields. A recognized-brand sensitivity rebuilds both user flags and spending from the restricted events.
 
-Aggregate distinct prescription records within each person using SQL. Reconcile ten source-payment fields to the recorded total within the cent-rounding tolerance, and collapse them to self/family, private insurance, Medicare, Medicaid, TRICARE and other sources. Unresolved negative payment codes, duplicate event IDs and inconsistent totals stop preparation.
+Distinct prescription records were aggregated within person using SQL. Ten source-payment fields were reconciled to recorded totals within the cent-rounding tolerance and grouped as self/family, private insurance, Medicare, Medicaid, TRICARE and other sources. Preparation stops on unresolved negative payment codes, duplicate event IDs or inconsistent totals.
 
 ## Payment distribution
 
-The main estimands are source shares of total target-medicine payments, mean annual payments per user, weighted self/family payment quantiles and the proportions in fixed dollar bands. Source shares are ratios of weighted sums, not averages of individual copayment percentages. A source-specific mean includes every observed user, including those with zero payment from that source.
+The main estimands are source shares of total target-medicine payments, mean annual payments per user, weighted self/family payment quantiles and proportions in fixed dollar bands. Source shares are ratios of weighted sums. Source-specific means include all medication users, including zero payments.
 
 Annual amounts are nominal 2024 dollars. Zero, over zero through $100, over $100 through $500, over $500 through $1,000, and over $1,000 form mutually exclusive bands. These are presentation boundaries, not financial-hardship definitions. The weighted median and upper quantiles are inverse empirical-CDF thresholds; tied values mean that the proportion above a quantile need not equal its nominal upper tail.
 
-Use person weights PERWT24F, strata VARSTR and clustered PSUs VARPSU. Domain estimation retains the full survey structure. Means and ratio components use Taylor linearization with domain degrees of freedom. Main proportions use bounded beta intervals. Quantiles use the inverse weighted CDF and beta-Woodruff intervals; the reported interval-width standard error is an approximation.
+Analyses used person weights PERWT24F, strata VARSTR and primary sampling units VARPSU, retaining the full survey structure for domain estimation. Means and ratio components used Taylor linearization with domain degrees of freedom. Proportions used beta intervals. Quantiles used the inverse weighted empirical CDF and beta-Woodruff intervals; interval-width standard errors are approximate.
 
 ## Reporting framework
 
-All descriptive means, ratios and person proportions use one AHRQ-based reporting framework. Require at least 60 unweighted people in the relevant analysis denominator, positive survey-design degrees of freedom, and finite estimates and uncertainty. For observed-use proportions the denominator is adults; for conditional spending and payer amounts/ratios it is medication users, including zero payments. Positive-payer counts remain diagnostics, with no separate minimum. RSE below 30% is reportable; 30% through 50% is displayed with an asterisk; above 50% is withheld. Only person proportions can use the AHRQ rare-proportion exception (95% upper bound at most 10%, displayed with an asterisk). A payer share is a ratio of dollars and never uses that exception. Boundary/degenerate estimates require review. An asterisk indicates limited precision, not statistical significance. No records are removed because an estimate is withheld.
+Descriptive means, ratios and person proportions follow an AHRQ-based precision framework. Reporting requires at least 60 unweighted observations in the relevant analysis denominator, positive survey-design degrees of freedom, and finite, nondegenerate estimates and uncertainty. Use proportions are evaluated against the adult denominator; spending means and payer ratios use the medication-user denominator, including zero payments. Estimates with relative standard errors (RSEs) below 30% are reported without a flag; those with RSEs of 30%–50% are flagged with an asterisk. Estimates with RSEs above 50% are withheld, except person proportions with a 95% upper confidence bound of at most 10%, which are reported with a precision flag. Positive-payment contributor counts are descriptive diagnostics. Reporting decisions apply to estimates and do not alter the analytic cohort.
 
-Quantiles use the same minimum of 60 users, with finite ordered beta-Woodruff intervals and positive design degrees of freedom. They additionally require 30 observations on each inclusive side of the estimated quantile, a project-specific support check; no RSE divided by the quantile is used. This checks the support for a distribution threshold, not the number of people paid for by an insurer. It is not an AHRQ quantile requirement. Model convergence, rank, support and signed-contrast checks remain separate from descriptive reporting criteria.
+Quantile reporting requires at least 60 users, finite ordered beta-Woodruff intervals, positive design degrees of freedom and at least 30 observations on each inclusive side of the estimated quantile. The two-sided count criterion is project-specific, rather than an AHRQ requirement. Quantiles are evaluated using interval and support criteria without an RSE threshold. Regression models have additional convergence, rank, support and contrast checks.
 
 Source: [AHRQ precision guidelines](https://meps.ahrq.gov/survey_comp/precision_guidelines.shtml).
 
@@ -32,13 +32,13 @@ An age-only survey quasibinomial model uses a fixed natural age spline and annua
 
 ## Analysis sequence
 
-The initial use and annual-coverage analysis was specified before outcome estimation. The age and monthly-coverage follow-up followed inspection of initial results and cell counts. The main payment-distribution analysis followed those earlier results but was specified before estimating the new quantiles and bands. These follow-ups are not original preregistrations. The 13 October 2026 revision harmonizes descriptive reporting rules across all current tables; prior versions remain in Git history. The cohort and point-estimation methods are unchanged; descriptive person-proportion intervals now consistently use beta intervals. This reporting revision followed inspection of earlier results and is not a preregistration; the main report focuses on payments because monthly coverage cannot answer purchase-specific reimbursement questions.
+The initial use and annual-coverage analysis was specified before outcome estimation. Age and monthly-coverage analyses followed review of initial results and cell counts. The payment-distribution follow-up was specified after those analyses and before estimating its quantiles and bands. These exploratory follow-ups were not preregistered. The 13 October 2026 revision harmonized reporting criteria after inspection of prior results and standardized descriptive person-proportion intervals to the beta method. Cohort definitions and point-estimation methods were unchanged; prior versions remain in Git history.
 
 ### Reporting revision: 13 October 2026
 
 Current tables replace the earlier descriptive count gates with the shared framework above. This change was made after inspecting earlier results. The raw source fingerprints, cohort, medication definition, weighting and point-estimation formulas are unchanged. Previously displayed point estimates and Taylor standard errors agree with the prior version; all nine self/family distribution rows are unchanged. Descriptive prevalence intervals now use the same beta method as payment-band proportions.
 
-Four previously withheld base-table rows and 19 extension-table rows are now displayed; no previously displayed rows become withheld. Four base rows and 13 extension rows carry precision flags. These are result rows, not new people. The current reports and source code apply one descriptive policy; previous versions remain in Git history.
+Four previously withheld base-table rows and 19 extension-table rows are now displayed; no previously displayed rows become withheld. Four base rows and 13 extension rows carry precision flags. The current reports and source code apply one descriptive policy; previous versions remain in Git history.
 
 The complete workflow passes 16 Python tests and 13 R helper cases, 71 base and 120 extension point/Taylor-SE checks, and the independent distribution and cross-output checks. The SAS source reflects the same continuous-ratio thresholds; the published outputs are produced by Python/SQL/R.
 
@@ -71,7 +71,7 @@ All adult non-users enter prevalence denominators. Spending is conditional on ob
 
 Mean annual self/family payment = sum(weight × person target-drug out-of-pocket spending) / sum(weight among users).
 
-Aggregate out-of-pocket share = sum(weight × target-drug out-of-pocket spending) / sum(weight × target-drug total payments). This is not the mean of individual payment shares.
+Aggregate out-of-pocket share = sum(weight × target-drug out-of-pocket spending) / sum(weight × target-drug total payments).
 
 Negative reserved codes are not dollar amounts or valid ages. The pipeline fails on unresolved target payment, age or design values. Unknown insurance would remain in the overall denominator but be audited separately. Missing generic names across all medicines are counted because their identities may be unknown.
 
@@ -94,7 +94,7 @@ PURCHRD is a survey round, and RXBEGMM/RXBEGYRX describe first use; they are not
 
 ### Distribution outputs
 
-- All new measures use the same 800 adult users, including zero self/family and zero total payments. Mean OOP remains the original weighted mean.
-- zero_oop_pct and four positive-dollar bands partition annual person-level oop at 0, 100, 500 and 1,000 dollars; upper bounds belong to the lower band. Their denominator is all users, not only those in a band.
-- median_oop, p75_oop, p90_oop are inverse weighted-CDF thresholds, not means among high-payment users. Each carries a beta-Woodruff 95% CI and a labelled approximate interval-width SE.
-- payment-distribution.csv stores counts, denominators, units, uncertainty method and reportability. Dollar cutoffs are not financial-hardship thresholds. No mean individual oop/total ratio is added; one user has zero total payments.
+- Distribution estimates use all 800 adult users, including zero self/family payments and one user with zero recorded total payments.
+- zero_oop_pct and four positive-dollar bands partition annual person-level oop at 0, 100, 500 and 1,000 dollars; upper bounds belong to the lower band. Band proportions use the full medication-user denominator.
+- median_oop, p75_oop and p90_oop are inverse weighted-CDF estimates with beta-Woodruff 95% confidence intervals and approximate interval-width standard errors.
+- payment-distribution.csv records counts, denominators, units, uncertainty methods and reportability. Dollar cutoffs are descriptive; financial hardship relative to income is outside the analysis scope.

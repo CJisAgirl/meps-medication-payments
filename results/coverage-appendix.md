@@ -1,12 +1,12 @@
 # Appendix: monthly insurance histories
 
-These descriptive histories cannot date every refill or establish drug-specific reimbursement. Read the [main payment report](research-brief.md) for observed payment sources.
+This appendix describes medication use and annual self/family spending by monthly insurance history. Recorded payment sources are presented in the [main report](research-brief.md).
 
-All descriptive means, ratios and person proportions use one AHRQ-based reporting framework. Require at least 60 unweighted people in the relevant analysis denominator, positive survey-design degrees of freedom, and finite estimates and uncertainty. For observed-use proportions the denominator is adults; for conditional spending and payer amounts/ratios it is medication users, including zero payments. Positive-payer counts remain diagnostics, with no separate minimum. RSE below 30% is reportable; 30% through 50% is displayed with an asterisk; above 50% is withheld. Only person proportions can use the AHRQ rare-proportion exception (95% upper bound at most 10%, displayed with an asterisk). A payer share is a ratio of dollars and never uses that exception. Boundary/degenerate estimates require review. An asterisk indicates limited precision, not statistical significance. No records are removed because an estimate is withheld.
+Estimates follow the [reporting framework](../METHODS.md#reporting-framework). Asterisks and triangular plot markers denote limited precision. Withheld estimates are identified by their sample-size or precision criterion.
 
 ## Complete monthly histories
 
-All 12 monthly insurance indicators must be explicitly known. Coverage at some time in every month does not establish coverage on every day. Unknown and out-of-scope values are never converted to uninsured. 195 adults, including 2 users, have incomplete histories and are excluded only from these complete-history comparisons; they remain in the main cohort. 195 incomplete histories include out-of-scope months.
+Complete-history comparisons required valid insurance indicators for all 12 months. The monthly measure captures coverage at any time within a month. Incomplete histories were excluded from these comparisons and retained in the main cohort: 195 adults, including 2 medication users; 195 incomplete histories included out-of-scope months. Unknown or out-of-scope values were classified as missing rather than uninsured. Use proportions are estimated among adults; spending means are estimated among medication users, including zero payments.
 
 | Monthly history | Sample users / adults | Observed use, % (95% CI) | Annual OOP per user, USD (95% CI) |
 | --- | ---: | ---: | ---: |
@@ -16,7 +16,7 @@ All 12 monthly insurance indicators must be explicitly known. Coverage at some t
 
 ## Source combinations among people covered in every month
 
-Preserve simultaneous private, TRICARE/CHAMPVA, Medicare, Medicaid/SCHIP, VA and other public sources. A changed combination is not necessarily a lapse in coverage, and a constant combination does not exclude a change of plan within one source type.
+Monthly source combinations retain simultaneous private, TRICARE/CHAMPVA, Medicare, Medicaid/SCHIP, VA and other public coverage. Source-mix changes capture changes across these categories, rather than plan-level switching or daily gaps in coverage.
 
 | Source history | Sample users / adults | Observed use, % (95% CI) | Annual OOP per user, USD (95% CI) |
 | --- | ---: | ---: | ---: |
@@ -25,8 +25,8 @@ Preserve simultaneous private, TRICARE/CHAMPVA, Medicare, Medicaid/SCHIP, VA and
 
 ![Monthly insurance histories](monthly-insurance.png)
 
-Triangles and asterisks indicate limited precision. Withheld values are not zero. A use proportion can be displayed while the corresponding user-only spending mean is withheld because their denominators differ.
+## Timing and interpretation
 
-PURCHRD identifies a survey round; RXBEGMM/RXBEGYRX identify first use and can carry forward across records. They cannot date every refill. Annual payments are not spread evenly across months. These results do not identify formularies, denials, unmet need or causal effects.
+PURCHRD identifies the survey round, while RXBEGMM/RXBEGYRX describe first use and may carry forward across records. These variables do not establish the purchase month of each refill. Annual payments were not allocated to individual months. The comparisons therefore describe annual spending by insurance history, without identifying purchase-specific reimbursement, formulary restrictions, denials or unmet need.
 
 Sources: [HC-256 insurance](https://meps.ahrq.gov/data_stats/download_data/pufs/h256/h256doc.shtml), [HC-254A timing](https://meps.ahrq.gov/data_stats/download_data/pufs/h254a/h254adoc.shtml), [AHRQ precision](https://meps.ahrq.gov/survey_comp/precision_guidelines.shtml).
