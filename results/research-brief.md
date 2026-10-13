@@ -2,8 +2,6 @@
 
 **MEPS 2024 | Recorded payment sources and annual self/family payments**
 
-Independent analysis of AHRQ public-use data.
-
 The population is adults with at least one recorded target-medicine purchase/receipt: **800 sampled users** from 15,126 sampled adults. Records are aggregated within person before survey weighting; repeated fills do not become independent people. The data were released in July/August 2026 and describe 2024.
 
 **Main finding:** self/family payments represented 4.80% of weighted target-medicine payments, while users' annual self/family payments had a mean of $343 and a median of $88.03. An estimated 24.62% of users had zero self/family payments and 9.02% paid more than $1,000. The aggregate payment share and the distribution across people answer different questions; neither establishes affordability.
@@ -60,7 +58,7 @@ Monthly insurance histories cannot be aligned to each refill's purchase month in
 
 The [analysis methods](../METHODS.md#analysis-sequence) was written after prior results were seen and before the new distribution was estimated. This is not an original preregistration. Use the full stratified, clustered survey design, then the adult-user domain; mean/proportion SEs use Taylor linearization, proportions have beta CIs, and quantiles use inverse weighted CDFs with beta-Woodruff CIs. New mean/proportion rules use the relevant denominator and AHRQ precision categories; quantile support is assessed separately. Legacy results retain their earlier rules. No person is deleted because an estimate is withheld.
 
-The full run includes 12 Python tests and 8 payment-helper tests; the new distribution has 9 independent point/Taylor-SE checks, 9 interval checks and 3 quantile point checks. Python independently checks weighted bands/quantiles, denominators and reconciliation. Original numerical estimates remain unchanged. See the [reproduction instructions](../README.md#reproduce).
+The full run includes 16 Python tests and 8 R payment-helper tests; the new distribution has 9 independent point/Taylor-SE checks, 9 interval checks and 3 quantile point checks. Python independently checks weighted bands/quantiles, denominators and reconciliation. Original numerical estimates remain unchanged. See the [reproduction instructions](../README.md#reproduce).
 
 
 [Distribution results](payment-distribution.csv) · [Distribution audit](payment-distribution-audit.json) · [Cross-output audit](payment-verification.json) · [Methods](../METHODS.md) · [Sources](../SOURCES.md)

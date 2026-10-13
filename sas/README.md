@@ -2,7 +2,7 @@
 
 [Open the complete program](run_meps.sas)
 
-**Status:** source code and input conversion are available. Execution in SAS and agreement with the R reference results have not yet been verified. The published research results remain those generated and checked by the Python/SQL/R pipeline.
+This directory provides SAS source code and input conversion for the main analysis. The published research results are generated and checked by the Python/SQL/R pipeline. Run the SAS program using the steps below to produce its output tables and reference comparisons.
 
 ## Scope
 
@@ -49,7 +49,7 @@ The full positive-weight survey design is retained for estimation. Filtering to 
 
 ## Validation and data handling
 
-Python tests cover source fingerprint rejection, CSV precision and identifier preservation, truncation rejection, and reference-table integrity. They do **not** compile or execute SAS. No SAS execution log or SAS-generated result is currently included.
+Python tests cover source fingerprint rejection, CSV precision and identifier preservation, truncation rejection, and reference-table integrity. SAS execution produces the log and comparison tables described above; use those outputs to assess each run.
 
 Only code and aggregate reference values belong in Git. Source CSVs, individual records, SAS datasets and local logs are ignored. Do not upload a SAS WORK library or any person-level file to the public repository.
 

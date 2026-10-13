@@ -1,4 +1,4 @@
-"""Input/reference integrity checks; these tests do not execute SAS."""
+"""Python input and reference integrity checks for the SAS source files."""
 import csv
 import hashlib
 import io

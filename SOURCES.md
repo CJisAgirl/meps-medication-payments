@@ -10,7 +10,7 @@ Checked 2026-10-09 UTC. Data describe 2024; release year is 2026.
 
 Direct download URLs, first retrieval times, byte counts and SHA-256 fingerprints are in results/source-manifest.json. Source revisions require explicit review and new provenance.
 
-Data citation: Agency for Healthcare Research and Quality. Medical Expenditure Panel Survey, 2024 Full Year Consolidated Data File (HC-256) and 2024 Prescribed Medicines (HC-254A). Released 2026. Analysis is independent and not endorsed by AHRQ or FDA.
+Data citation: Agency for Healthcare Research and Quality. Medical Expenditure Panel Survey, 2024 Full Year Consolidated Data File (HC-256) and 2024 Prescribed Medicines (HC-254A). Released 2026.
 
 ## Extension checks — 11 October 2026
 

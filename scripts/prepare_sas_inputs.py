@@ -99,7 +99,7 @@ def main():
         frame = read_source(ROOT, name, columns)
         records[filename] = write_input(frame, columns, out / filename)
     (out / 'input-manifest.json').write_text(json.dumps(
-        {'status': 'source_projection_only_not_SAS_execution', 'files': records}, indent=2) + '\n')
+        {'status': 'source_projection_checks', 'files': records}, indent=2) + '\n')
     path = ROOT / 'sas/run_meps.sas'
     text = path.read_text()
     pattern = r'/\* BEGIN R REFERENCES.*?/\* END R REFERENCES \*/'

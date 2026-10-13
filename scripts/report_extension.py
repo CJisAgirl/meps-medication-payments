@@ -53,12 +53,8 @@ if all(r['status']=='reportable' for r in adjusted):
                        else 'The interval excludes zero under this age-only model; this does not establish causation.')
     adjusted_summary=(f"Age-only standardized use was {show(a)}% for any-private coverage and {show(b)}% for public-only coverage. "
                       f"The public-minus-private difference was {show(d)} percentage points. {interval_sentence} The model does not identify a causal insurance effect.")
-    adjusted_zh=(f"把两组放到相同参考年龄分布下，模型估计的使用比例为私人保险{show(a)}%、公共保险{show(b)}%。"
-                 f"差值为{show(d)}个百分点。括号为95%置信区间。"
-                 + ('差值区间包含0，不表示已证明完全相同。' if includes_zero else '差值区间不包含0，但仍然不是因果效果。'))
 else:
     adjusted_summary='The age-only standardized comparison was withheld because its model/support or margin reporting gate failed.'
-    adjusted_zh='本轮模型支持或结果报告门槛未通过，因此暂不报告年龄调整后的比较。'
 model_description=(f"Use a survey-weighted quasibinomial model with a natural cubic spline of age (3 df, internal knots {model.get('spline_knots')}, boundaries 18 and top-coded 85) and annual coverage. There is no age-by-coverage interaction. Standardize predictions to the combined survey-weighted age distribution of {model.get('reference_adults'):,} any-private/public-only adults ({model.get('reference_users'):,} users)." if model['support_gate'] else 'Model support was insufficient for the planned age-only comparison.')
 age_payments='\n\n'.join(f"### {age}\n\n| Payment source | Users with positive payment | Annual USD per user (95% CI) | Share of payments, % (95% CI) |\n| --- | ---: | ---: | ---: |\n{payer_table(age)}" for age in ['18-34','35-49','50-64','65-74','75+'])
 text=f'''# Finer age groups, monthly insurance histories and who paid
@@ -134,11 +130,11 @@ Only age is adjusted. Disease burden, indication, income, drug mix, coverage tim
 
 ## Validation and reproduction
 
-Run `python3 run.py` from the project directory to reproduce both the original analysis and this extension. The extension adds six unit tests (12 total), {design['independent_mean_ratio_checks']} independently recomputed point estimates and Taylor SEs, manual predictive-margin point/covariance checks, and an intercept-only comparison against crude survey means. Payment components reconcile to event totals and independently to SQL/person sums. The original 71 checks also remain in the full run.
+Run `python3 run.py` from the project directory to reproduce both the original analysis and this extension. The extension adds six Python unit tests (12 across the original and extension analyses, plus four SAS-input Python tests), {design['independent_mean_ratio_checks']} independently recomputed point estimates and Taylor SEs, manual predictive-margin point/covariance checks, and an intercept-only comparison against crude survey means. Payment components reconcile to event totals and independently to SQL/person sums. The original 71 checks also remain in the full run.
 
 Read [cohort audit](extension-cohort-audit.json), [design audit](extension-design-audit.json), [aggregate results](extension-estimates.csv), [model support](age-adjustment-support.csv), [adjusted use](age-adjusted-use.csv). The extension contains {design['extension_rows']} descriptive result rows: {design['reportable']} reportable and {design['suppressed']} withheld under fixed gates.
 
-Primary documentation: [HC-256 insurance](https://meps.ahrq.gov/data_stats/download_data/pufs/h256/h256doc.shtml), [HC-254A timing/payments](https://meps.ahrq.gov/data_stats/download_data/pufs/h254a/h254adoc.shtml), [survey predictive margins](https://r-survey.r-forge.r-project.org/pkgdown/docs/reference/svypredmeans.html). Independent analysis of AHRQ public-use data.
+Primary documentation: [HC-256 insurance](https://meps.ahrq.gov/data_stats/download_data/pufs/h256/h256doc.shtml), [HC-254A timing/payments](https://meps.ahrq.gov/data_stats/download_data/pufs/h254a/h254adoc.shtml), [survey predictive margins](https://r-survey.r-forge.r-project.org/pkgdown/docs/reference/svypredmeans.html).
 
 
 ## Appendix: payer components by age

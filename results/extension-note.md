@@ -76,11 +76,11 @@ Only age is adjusted. Disease burden, indication, income, drug mix, coverage tim
 
 ## Validation and reproduction
 
-Run `python3 run.py` from the project directory to reproduce both the original analysis and this extension. The extension adds six Python unit tests (12 Python tests across the original and extension workflows), 120 independently recomputed point estimates and Taylor SEs, manual predictive-margin point/covariance checks, and an intercept-only comparison against crude survey means. Payment components reconcile to event totals and independently to SQL/person sums. The original 71 checks also remain in the full run.
+Run `python3 run.py` from the project directory to reproduce both the original analysis and this extension. The extension adds six Python unit tests (12 across the original and extension analyses, plus four SAS-input Python tests), 120 independently recomputed point estimates and Taylor SEs, manual predictive-margin point/covariance checks, and an intercept-only comparison against crude survey means. Payment components reconcile to event totals and independently to SQL/person sums. The original 71 checks also remain in the full run.
 
 Read [cohort audit](extension-cohort-audit.json), [design audit](extension-design-audit.json), [aggregate results](extension-estimates.csv), [model support](age-adjustment-support.csv), [adjusted use](age-adjusted-use.csv). The extension contains 122 descriptive result rows: 59 reportable and 63 withheld under fixed gates.
 
-Primary documentation: [HC-256 insurance](https://meps.ahrq.gov/data_stats/download_data/pufs/h256/h256doc.shtml), [HC-254A timing/payments](https://meps.ahrq.gov/data_stats/download_data/pufs/h254a/h254adoc.shtml), [survey predictive margins](https://r-survey.r-forge.r-project.org/pkgdown/docs/reference/svypredmeans.html). Independent analysis of AHRQ public-use data.
+Primary documentation: [HC-256 insurance](https://meps.ahrq.gov/data_stats/download_data/pufs/h256/h256doc.shtml), [HC-254A timing/payments](https://meps.ahrq.gov/data_stats/download_data/pufs/h254a/h254adoc.shtml), [survey predictive margins](https://r-survey.r-forge.r-project.org/pkgdown/docs/reference/svypredmeans.html).
 
 
 ## Appendix: payer components by age

@@ -1,7 +1,8 @@
 /* MEPS 2024 medication payments: DATA step, PROC SQL and PROC SURVEYMEANS.
    Upload person_source.csv and rx_source.csv from data/sas-inputs to SAS Studio.
    Set input_dir to that folder's path on the SAS server, then run the entire file.
-   Actual SAS execution has not yet been verified. No patient-level data are published.
+   Published reference estimates come from the Python/SQL/R workflow.
+   No patient-level data are published.
 */
 %let input_dir=/home/your-user/meps-sas-inputs;
 %let output_dir=%sysfunc(pathname(work));

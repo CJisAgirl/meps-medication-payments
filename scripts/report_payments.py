@@ -25,19 +25,15 @@ def payer(source, metric):
 
 
 sources = ['Self/family', 'Private insurance', 'Medicare', 'Medicaid', 'TRICARE', 'Other sources']
-zh_sources = ['个人／家庭', '私人保险', 'Medicare', 'Medicaid', 'TRICARE', '其他来源']
 en_payers = '\n'.join(f"| {s} | {show(payer(s,'payment_share_pct'))} | {show(payer(s,'annual_payment_usd'),0)} |" for s in sources)
-zh_payers = '\n'.join(f"| {z} | {show(payer(s,'payment_share_pct'))} |" for s,z in zip(sources,zh_sources))
-quantiles = [('median_oop','Median (50th percentile)','中位数（第50百分位）'),
-             ('p75_oop','75th percentile','第75百分位'),('p90_oop','90th percentile','第90百分位')]
-en_distribution = f"| Mean | {show(rows['mean_oop'])} |\n" + '\n'.join(f"| {en} | {show(rows[k])} |" for k,en,_ in quantiles)
-zh_distribution = f"| 平均值 | {show(rows['mean_oop'])} |\n" + '\n'.join(f"| {zh} | {show(rows[k])} |" for k,_,zh in quantiles)
-bands = [('zero_oop_pct','$0','恰好0美元'), ('oop_0_100_pct','Over $0 through $100','大于0至100美元'),
-         ('oop_100_500_pct','Over $100 through $500','大于100至500美元'),
-         ('oop_500_1000_pct','Over $500 through $1,000','大于500至1,000美元'),
-         ('oop_over_1000_pct','Over $1,000','超过1,000美元')]
-en_bands = '\n'.join(f"| {en} | {rows[k]['sample_in_category']} | {show(rows[k])} |" for k,en,_ in bands)
-zh_bands = '\n'.join(f"| {zh} | {rows[k]['sample_in_category']} | {show(rows[k])} |" for k,_,zh in bands)
+quantiles = [('median_oop','Median (50th percentile)'),
+             ('p75_oop','75th percentile'),('p90_oop','90th percentile')]
+en_distribution = f"| Mean | {show(rows['mean_oop'])} |\n" + '\n'.join(f"| {en} | {show(rows[k])} |" for k,en in quantiles)
+bands = [('zero_oop_pct','$0'), ('oop_0_100_pct','Over $0 through $100'),
+         ('oop_100_500_pct','Over $100 through $500'),
+         ('oop_500_1000_pct','Over $500 through $1,000'),
+         ('oop_over_1000_pct','Over $1,000')]
+en_bands = '\n'.join(f"| {en} | {rows[k]['sample_in_category']} | {show(rows[k])} |" for k,en in bands)
 
 # Fail explicitly if an unsupported primary finding would otherwise enter prose.
 assert all(rows[k]['status']=='reportable' for k in ['mean_oop','median_oop','zero_oop_pct','oop_over_1000_pct'])
@@ -50,8 +46,6 @@ self_share = float(payer('Self/family','payment_share_pct')['estimate'])
 brief = f'''# Who paid for GLP-1 medicines and tirzepatide, and what did users pay themselves?
 
 **MEPS 2024 | Recorded payment sources and annual self/family payments**
-
-Independent analysis of AHRQ public-use data.
 
 The population is adults with at least one recorded target-medicine purchase/receipt: **{audit['adult_users']} sampled users** from 15,126 sampled adults. Records are aggregated within person before survey weighting; repeated fills do not become independent people. The data were released in July/August 2026 and describe 2024.
 
@@ -97,7 +91,7 @@ Monthly insurance histories cannot be aligned to each refill's purchase month in
 
 The [analysis methods](../METHODS.md#analysis-sequence) was written after prior results were seen and before the new distribution was estimated. This is not an original preregistration. Use the full stratified, clustered survey design, then the adult-user domain; mean/proportion SEs use Taylor linearization, proportions have beta CIs, and quantiles use inverse weighted CDFs with beta-Woodruff CIs. New mean/proportion rules use the relevant denominator and AHRQ precision categories; quantile support is assessed separately. Legacy results retain their earlier rules. No person is deleted because an estimate is withheld.
 
-The full run includes 12 Python tests and 8 payment-helper tests; the new distribution has {audit['independent_mean_proportion_point_se_checks']} independent point/Taylor-SE checks, {audit['independent_interval_checks']} interval checks and {audit['independent_quantile_point_checks']} quantile point checks. Python independently checks weighted bands/quantiles, denominators and reconciliation. Original numerical estimates remain unchanged. See the [reproduction instructions](../README.md#reproduce).
+The full run includes 16 Python tests and 8 R payment-helper tests; the new distribution has {audit['independent_mean_proportion_point_se_checks']} independent point/Taylor-SE checks, {audit['independent_interval_checks']} interval checks and {audit['independent_quantile_point_checks']} quantile point checks. Python independently checks weighted bands/quantiles, denominators and reconciliation. Original numerical estimates remain unchanged. See the [reproduction instructions](../README.md#reproduce).
 
 
 [Distribution results](payment-distribution.csv) · [Distribution audit](payment-distribution-audit.json) · [Cross-output audit](payment-verification.json) · [Methods](../METHODS.md) · [Sources](../SOURCES.md)
