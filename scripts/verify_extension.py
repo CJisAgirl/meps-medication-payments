@@ -85,7 +85,7 @@ def main():
     assert design['flagged']==int(rows.status.str.startswith('flagged:').sum())
     assert design['displayed']==int(kept.sum())
     assert design['suppressed']==int((~kept).sum())
-    for file in ['detailed-age.png','monthly-insurance.png','payment-sources.png']:
+    for file in ['detailed-age.png','payment-sources.png']:
         assert (ROOT/'results'/file).read_bytes().startswith(b'\x89PNG\r\n\x1a\n')
     print('PASS: base cohort equality, age/history partitions, payer denominators, suppression, CIs and model outputs.')
 

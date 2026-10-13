@@ -68,14 +68,15 @@ fields = ['estimate','se','lower_95','upper_95']
 assert np.allclose(result.loc['mean_oop',fields].astype(float),old[fields].astype(float),rtol=1e-10,atol=1e-10)
 assert (ROOT/'results/selfpay-distribution.png').read_bytes().startswith(b'\x89PNG\r\n\x1a\n')
 main = (ROOT/'results/research-brief.md').read_text()
-assert 'coverage-appendix.md' in main and 'monthly-insurance.png' not in main
-appendix = (ROOT/'results/coverage-appendix.md').read_text()
-assert 'monthly-insurance.png' in appendix and '1194' in appendix
+assert 'extension-note.md' in main
+for removed in ['coverage-appendix.md', 'monthly-insurance.png']:
+    assert not (ROOT/'results'/removed).exists()
+    assert all(removed not in p.read_text() for p in ROOT.rglob('*.md'))
 assert '88.03' in main and '24.62' in main and '9.02' in main
 assert (ROOT/'METHODS.md').is_file() and (ROOT/'README.md').is_file()
 audit = {'status':'PASS','independent_python_point_and_se_checks':checks,
          'independent_python_quantile_checks':3,'band_counts_partition_users':True,
          'same_original_mean_ci_and_se':True,'zero_total_users_retained':int(u.total.eq(0).sum()),
-         'main_and_appendix_navigation':'PASS'}
+         'report_navigation':'PASS'}
 (ROOT/'results/payment-verification.json').write_text(json.dumps(audit,indent=2)+'\n')
 print('PASS: independent Python distribution/quantiles, full-design SEs, denominators, old mean and report navigation.')

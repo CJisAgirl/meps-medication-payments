@@ -41,7 +41,6 @@ def payer_table(age):
 
 
 
-missing=cohort['monthly_history_counts'].get('incomplete',{'adults':0,'users':0})
 model=design['age_adjustment']
 metric_labels = {'age_adjusted_use_pct': 'Age-adjusted use, %',
                  'age_adjusted_difference_pp': 'Difference, percentage points'}
@@ -49,36 +48,6 @@ adjusted_table='\n'.join(f"| {r['group']} | {metric_labels[r['metric']]} | {show
 model_note = '' if model['status'].startswith('estimated') else f" Model estimation status: {model['status']}."
 age_payments='\n\n'.join(f"### {age}\n\n| Payment source | Users with positive payment | Annual USD per user (95% CI) | Share of payments, % (95% CI) |\n| --- | ---: | ---: | ---: |\n{payer_table(age)}" for age in ['18-34','35-49','50-64','65-74','75+'])
 rules='Estimates follow the [reporting framework](../METHODS.md#reporting-framework). Asterisks and triangular plot markers denote limited precision. Withheld estimates are identified by their sample-size or precision criterion.'
-appendix=f'''# Appendix: monthly insurance histories
-
-This appendix describes medication use and annual self/family spending by monthly insurance history. Recorded payment sources are presented in the [main report](research-brief.md).
-
-{rules}
-
-## Complete monthly histories
-
-Complete-history comparisons required valid insurance indicators for all 12 months. The monthly measure captures coverage at any time within a month. Incomplete histories were excluded from these comparisons and retained in the main cohort: {missing['adults']} adults, including {missing['users']} medication users; {cohort['incomplete_history_with_out_of_scope_months']} incomplete histories included out-of-scope months. Unknown or out-of-scope values were classified as missing rather than uninsured. Use proportions are estimated among adults; spending means are estimated among medication users, including zero payments.
-
-| Monthly history | Sample users / adults | Observed use, % (95% CI) | Annual OOP per user, USD (95% CI) |
-| --- | ---: | ---: | ---: |
-{pair_table('monthly_history')}
-
-## Source combinations among people covered in every month
-
-Monthly source combinations retain simultaneous private, TRICARE/CHAMPVA, Medicare, Medicaid/SCHIP, VA and other public coverage. Source-mix changes capture changes across these categories, rather than plan-level switching or daily gaps in coverage.
-
-| Source history | Sample users / adults | Observed use, % (95% CI) | Annual OOP per user, USD (95% CI) |
-| --- | ---: | ---: | ---: |
-{pair_table('source_changes')}
-
-![Monthly insurance histories](monthly-insurance.png)
-
-## Timing and interpretation
-
-PURCHRD identifies the survey round, while RXBEGMM/RXBEGYRX describe first use and may carry forward across records. These variables do not establish the purchase month of each refill. Annual payments were not allocated to individual months. The comparisons therefore describe annual spending by insurance history, without identifying purchase-specific reimbursement, formulary restrictions, denials or unmet need.
-
-Sources: [HC-256 insurance](https://meps.ahrq.gov/data_stats/download_data/pufs/h256/h256doc.shtml), [HC-254A timing](https://meps.ahrq.gov/data_stats/download_data/pufs/h254a/h254adoc.shtml), [AHRQ precision](https://meps.ahrq.gov/survey_comp/precision_guidelines.shtml).
-'''
 text=f'''# Supplementary age, insurance and payment analyses
 
 These exploratory analyses extend the [main payment report](research-brief.md) to age and insurance subgroups. The questions were developed after reviewing initial results; their sequence is documented in [Methods](../METHODS.md#analysis-sequence).
@@ -96,10 +65,6 @@ Age groups were 18–34, 35–49, 50–64, 65–74 and 75+. Under the MEPS defin
 | Age | Annual coverage | Sample users / adults | Observed use, % (95% CI) | Annual OOP per user, USD (95% CI) |
 | --- | --- | ---: | ---: | ---: |
 {pair_table('detailed_age')}
-
-## Monthly histories
-
-The [coverage appendix](coverage-appendix.md) presents annual outcomes by monthly insurance history and describes the timing limitations of these measures.
 
 ## Recorded payment sources
 
@@ -135,6 +100,5 @@ Age-specific means include all medication users within each group, including zer
 
 {age_payments}
 '''
-(ROOT/'results/coverage-appendix.md').write_text(appendix)
 (ROOT/'results/extension-note.md').write_text(text)
 print('Generated current supplementary reports under the unified descriptive framework.')

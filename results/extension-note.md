@@ -35,10 +35,6 @@ Age groups were 18–34, 35–49, 50–64, 65–74 and 75+. Under the MEPS defin
 | 75+ | Public only | 69 / 1379 | 5.37 (4.13–6.85) | 611 (384–838) |
 | 75+ | Uninsured all year | 0 / 5 | Withheld: denominator n < 60 | Withheld: denominator n < 60 |
 
-## Monthly histories
-
-The [coverage appendix](coverage-appendix.md) presents annual outcomes by monthly insurance history and describes the timing limitations of these measures.
-
 ## Recorded payment sources
 
 Ten edited/imputed source-payment fields were aggregated within person. Other sources combine VA/CHAMPVA, other federal, state/local, workers' compensation and other insurance. Means include all adult medication users, including zero payments; shares are ratios of weighted source totals to total payments. Counts indicate users with positive payments from each source and may overlap.

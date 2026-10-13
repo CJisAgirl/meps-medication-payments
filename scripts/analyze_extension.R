@@ -176,18 +176,6 @@ mtext("Finer age groups retain precision gates",outer=TRUE,side=3,line=.4,font=2
 mtext("MEPS 2024 | Points and 95% survey CIs | Private includes TRICARE and mixed coverage.",outer=TRUE,side=1,line=.5,cex=.85)
 mtext("Triangle = low precision. Withheld means insufficient sample size or precision; it is not zero.",outer=TRUE,side=1,line=1.6,cex=.85)
 invisible(dev.off())
-png("results/monthly-insurance.png",width=1900,height=1350,res=170)
-par(mfrow=c(2,2),mar=c(4,12,3,1),oma=c(3,0,2,0))
-for(analysis in c("monthly_history","source_changes")) for(metric in c("prevalence_pct","annual_oop_usd")) {
- z <- out[out$analysis==analysis & out$metric==metric,]
- labels <- if(analysis=="monthly_history") c("Covered in every month","Some uninsured months","All months uninsured") else c("Same source mix","Source mix changed")
- reference <- out[out$analysis %in% c("monthly_history","source_changes") & out$metric==metric,]
- forest(z,labels,paste(if(analysis=="monthly_history") "12-month history" else "All months covered",if(metric=="prevalence_pct") "| Use" else "| OOP"),if(metric=="prevalence_pct") "Adults with recorded use (%)" else "Annual USD per user",reference)
-}
-mtext("Monthly insurance histories and annual outcomes",outer=TRUE,side=3,line=.4,font=2)
-mtext("Monthly coverage is not uninterrupted daily coverage. Incomplete histories are audited separately.",outer=TRUE,side=1,line=.5,cex=.85)
-mtext("Triangle = low precision. Source mix does not identify plan switches or purchase-specific coverage.",outer=TRUE,side=1,line=1.6,cex=.85)
-invisible(dev.off())
 png("results/payment-sources.png",width=1900,height=1000,res=170)
 par(mfrow=c(1,2),mar=c(4,10,3,1),oma=c(3,0,2,0))
 for(metric in c("annual_payment_usd","payment_share_pct")) {

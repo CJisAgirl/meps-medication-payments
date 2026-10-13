@@ -5,5 +5,5 @@
   "band_counts_partition_users": true,
   "same_original_mean_ci_and_se": true,
   "zero_total_users_retained": 1,
-  "main_and_appendix_navigation": "PASS"
+  "report_navigation": "PASS"
 }

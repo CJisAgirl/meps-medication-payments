@@ -52,7 +52,7 @@ Annual self/family spending was zero for 24.62% of users and exceeded $1,000 for
 
 MEPS payment records undergo editing and imputation and do not capture the full claims-adjudication process. Manufacturer rebates to payers are not captured, so reported payments are not net payer costs after rebates. The analysis does not assess benefit eligibility, denial reasons, cost-related nonreceipt of medicines or treatment effectiveness. Insurance comparisons are descriptive associations.
 
-Public-file timing variables do not support linking each medication acquisition to its purchase-month insurance coverage. Monthly histories are reported in the [coverage appendix](coverage-appendix.md); age and annual-coverage analyses are reported in the [supplement](extension-note.md).
+Public-file timing variables do not support linking each medication acquisition to its purchase-month insurance coverage. Age-stratified payments and age-adjusted use estimates are reported in the [supplement](extension-note.md).
 
 ## Statistical methods and reproducibility
 

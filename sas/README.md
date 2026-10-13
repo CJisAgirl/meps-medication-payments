@@ -13,7 +13,7 @@ The program implements the main 2024 adult medication-use and payment analysis:
 - **PROC SURVEYMEANS:** specify `PERWT24F`, `VARSTR`, and `VARPSU`; use `DOMAIN` for adult prevalence and adult-user annual spending, payment-band proportions, payer ratios and weighted quantiles.
 - **Quality control:** stop for duplicate identifiers, unmatched records, invalid payments, unexpected cohort counts or disagreement with the saved reference estimates.
 
-This covers the main adult population. The age and monthly insurance-history supplements remain in R. Drug use is observed use regardless of indication, not a diagnosis-based diabetes cohort.
+This covers the main adult population. The age and annual-coverage supplement remains in R. Drug use is observed use regardless of indication, not a diagnosis-based diabetes cohort.
 
 ## Run
 

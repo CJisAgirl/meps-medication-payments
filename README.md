@@ -19,7 +19,7 @@ The population includes adult users of the target medicines regardless of indica
 - Estimate payer shares, annual mean payments, weighted quantiles and payment-band proportions using survey weights, strata and primary sampling units.
 - Apply a shared descriptive precision framework, with separate quantile-support checks, and record reasons for withholding estimates.
 - Reconstruct selected weighted estimates and survey variances independently and reconcile payment components and denominators.
-- Examine age, annual coverage and monthly insurance histories as supplementary descriptive analyses.
+- Examine age and annual coverage as supplementary descriptive analyses.
 
 ![Annual self/family payment distribution](results/selfpay-distribution.png)
 
@@ -38,7 +38,7 @@ These are observed, edited/imputed survey payments. They do not establish prescr
 | [Tests](tests/) | Deterministic checks of classification, aggregation and payment methods |
 | [SAS implementation](sas/) | DATA step, PROC SQL and PROC SURVEYMEANS source for the main analysis |
 
-The [age supplement](results/extension-note.md) and [coverage appendix](results/coverage-appendix.md) retain secondary findings. All published data tables are aggregates; downloaded microdata and person-level intermediates stay local.
+The [age supplement](results/extension-note.md) presents age-stratified payments and age-adjusted use estimates. All published data tables are aggregates; downloaded microdata and person-level intermediates stay local.
 
 ## Reproduce
 
