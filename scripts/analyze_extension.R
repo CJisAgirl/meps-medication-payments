@@ -1,6 +1,7 @@
 # Follow-up estimands and reporting gates are in METHODS.md.
 suppressPackageStartupMessages(library(survey))
 suppressPackageStartupMessages(library(jsonlite))
+source("scripts/payment_helpers.R")
 options(survey.lonely.psu="fail", survey.adjust.domain.lonely=FALSE)
 p <- read.csv("data/processed/extension-persons.csv", colClasses=c(DUPERSID="character"))
 p <- p[p$PERWT24F > 0, ]
@@ -29,14 +30,6 @@ manual_ratio <- function(num, den) {
   influence <- w*(num-e*den)/sum(w*den)
   c(estimate=e,se=sqrt(as.numeric(psu_cov(influence))))
 }
-gate <- function(n,u,contributors,e,se,df) {
-  if(n<100) return("suppressed: adult n < 100")
-  if(u<30) return("suppressed: user n < 30")
-  if(!is.na(contributors) && contributors<30) return("suppressed: positive-payer users < 30")
-  if(df<1) return("suppressed: design df < 1")
-  if(!is.finite(e) || e==0 || !is.finite(se) || abs(se/e)>.30) return("suppressed: RSE > 30%")
-  "reportable"
-}
 add <- function(analysis, age, group, metric, mask, kind="mean", variable="oop", payer=FALSE) {
   mask <- mask & adult; mask[is.na(mask)] <- FALSE
   n <- sum(mask); u <- sum(mask & p$user==1)
@@ -54,16 +47,18 @@ add <- function(analysis, age, group, metric, mask, kind="mean", variable="oop",
     checks <<- checks+1L
     if(df>0) {
       if(kind=="prevalence") {
-        if(e>0 && e<1) ci <- as.numeric(confint(svyciprop(~user,d,method="logit",df=df)))
+        if(e>0 && e<1) ci <- as.numeric(confint(svyciprop(~user,d,method="beta",df=df)))
       } else ci <- as.numeric(confint(f,df=df))
     }
   }
-  status <- gate(n,u,contributors,e,se,df)
+  denominator <- if(kind=="prevalence") n else u
+  status <- payment_precision(if(kind=="prevalence") "proportion" else kind,denominator,e,se,ci,df)
+  visible <- precision_visible(status)
   scale <- if(kind %in% c("prevalence","ratio")) 100 else 1
   rows[[length(rows)+1L]] <<- data.frame(analysis,age,group,metric,unweighted_adults=n,unweighted_users=u,
-    positive_payer_users=contributors,estimate=if(status=="reportable") scale*e else NA_real_,
-    se=if(status=="reportable") scale*se else NA_real_,lower_95=if(status=="reportable") scale*ci[1] else NA_real_,
-    upper_95=if(status=="reportable") scale*ci[2] else NA_real_,rse=if(status=="reportable") abs(se/e) else NA_real_,design_df=df,status)
+    denominator_n=denominator,positive_payer_users=contributors,estimate=if(visible) scale*e else NA_real_,
+    se=if(visible) scale*se else NA_real_,lower_95=if(visible) scale*ci[1] else NA_real_,
+    upper_95=if(visible) scale*ci[2] else NA_real_,rse=if(visible) abs(se/e) else NA_real_,design_df=df,status)
 }
 pair <- function(analysis,age,group,mask) {
   add(analysis,age,group,"prevalence_pct",mask,"prevalence")
@@ -79,7 +74,7 @@ for(age in c("All adults",ages)) for(v in names(payer_labels)) {
 }
 out <- do.call(rbind,rows)
 stopifnot(!anyDuplicated(out[c("analysis","age","group","metric")]))
-hidden <- out$status!="reportable"
+hidden <- !precision_visible(out$status)
 stopifnot(all(is.na(as.matrix(out[hidden,c("estimate","se","lower_95","upper_95","rse")]))))
 ok <- !hidden
 stopifnot(all(is.finite(as.matrix(out[ok,c("estimate","se","lower_95","upper_95")]))),
@@ -142,32 +137,32 @@ if(supported) {
   model_rows <- list(); dfs <- fit$df.residual; critical <- qt(.975,dfs)
   for(j in 1:2) {
     pr <- points[j];se <- sqrt(manual_cov[j,j]); ix <- mask & !is.na(p$cover_model) & p$cover_model==lev[j]
-    state <- gate(sum(ix),sum(p$user[ix]),NA,pr,se,dfs)
     ci <- plogis(qlogis(pr)+c(-1,1)*critical*se/(pr*(1-pr)))
+    state <- payment_precision("proportion",sum(ix),pr,se,ci,dfs)
     model_rows[[j]] <- data.frame(group=lev[j],metric="age_adjusted_use_pct",estimate=100*pr,se=100*se,lower_95=100*ci[1],upper_95=100*ci[2],design_df=dfs,status=state)
   }
   # A signed contrast is governed by support/finite-variance gates, not RSE.
   difference <- points[2]-points[1];contrast <- c(-1,1)
   difference_se <- sqrt(as.numeric(t(contrast)%*%manual_cov%*%contrast))
-  model_rows[[3]] <- data.frame(group="Public only minus any private",metric="age_adjusted_difference_pp",estimate=100*difference,se=100*difference_se,lower_95=100*(difference-critical*difference_se),upper_95=100*(difference+critical*difference_se),design_df=dfs,status=if(all(vapply(model_rows,function(z) z$status=="reportable",logical(1)))) "reportable" else "suppressed: margin gate")
+  model_rows[[3]] <- data.frame(group="Public only minus any private",metric="age_adjusted_difference_pp",estimate=100*difference,se=100*difference_se,lower_95=100*(difference-critical*difference_se),upper_95=100*(difference+critical*difference_se),design_df=dfs,status=if(all(vapply(model_rows,function(z) precision_visible(z$status),logical(1)))) {if(any(vapply(model_rows,function(z) startsWith(z$status,"flagged:"),logical(1)))) "flagged: low-precision margin" else "reportable"} else "suppressed: margin gate")
   adjusted <- do.call(rbind,model_rows)
-  adjusted[adjusted$status!="reportable",c("estimate","se","lower_95","upper_95")] <- NA_real_
+  adjusted[!precision_visible(adjusted$status),c("estimate","se","lower_95","upper_95")] <- NA_real_
   model_audit <- list(status="estimated: age-adjusted association only",support_gate=TRUE,formula="user ~ natural spline(age, df=3) + annual coverage",spline_knots=knots,boundary_knots=c(18,85),reference_adults=sum(mask),reference_users=sum(p$user[mask]),converged=fit$converged,rank=fit$rank,df=dfs,point_reconstruction="PASS",two_component_covariance_reconstruction="PASS",intercept_only_crude_check="PASS",predictive_margins_method="survey::svypredmeans; model plus target-distribution variance components",adjusted_spending="not estimated; requires separate plan")
 }
 write.csv(adjusted,"results/age-adjusted-use.csv",row.names=FALSE,na="")
-write_json(list(extension_rows=nrow(out),reportable=sum(ok),suppressed=sum(hidden),independent_mean_ratio_checks=checks,reporting_gate="PASS",age_adjustment=model_audit),"results/extension-design-audit.json",pretty=TRUE,auto_unbox=TRUE,digits=10)
+write_json(list(extension_rows=nrow(out),reportable=sum(out$status=="reportable"),flagged=sum(startsWith(out$status,"flagged:")),displayed=sum(ok),suppressed=sum(hidden),reporting_rule="AHRQ MEPS descriptive precision; denominator n >= 60; no positive-contributor gate",independent_mean_ratio_checks=checks,reporting_gate="PASS",age_adjustment=model_audit),"results/extension-design-audit.json",pretty=TRUE,auto_unbox=TRUE,digits=10)
 
 # Scientific plots: no interpolation or bars for withheld estimates.
 forest <- function(z,labels,title,xlab,reference=z) {
-  yy <- rev(seq_len(nrow(z))); available <- z$status=="reportable"
-  ref_ok <- reference$status=="reportable"
+  yy <- rev(seq_len(nrow(z))); available <- precision_visible(z$status)
+  ref_ok <- precision_visible(reference$status)
   upper <- max(c(reference$upper_95[ref_ok],1),na.rm=TRUE)*1.15
   lower <- min(c(reference$lower_95[ref_ok],0),na.rm=TRUE)
   plot(NA,xlim=c(lower,upper),ylim=c(.5,nrow(z)+.5),yaxt="n",ylab="",xlab=xlab,main=title,bty="n",las=1)
   axis(2,at=yy,labels=labels,las=1,cex.axis=.82)
   abline(v=axTicks(1),col="#e7ecef",lwd=.6)
   segments(z$lower_95[available],yy[available],z$upper_95[available],yy[available],col="#187e85",lwd=2)
-  points(z$estimate[available],yy[available],pch=19,col="#12555b",cex=1.1)
+  points(z$estimate[available],yy[available],pch=ifelse(startsWith(z$status[available],"flagged:"),17,19),col="#12555b",cex=1.1)
   if(any(!available)) text(rep(upper*.03,sum(!available)),yy[!available],"Withheld",adj=0,col="#767676",cex=.8)
 }
 png("results/detailed-age.png",width=1900,height=1450,res=170)
@@ -175,11 +170,11 @@ par(mfrow=c(2,2),mar=c(4,9,3,1),oma=c(3,0,2,0))
 for(ins in ins_labels[2:3]) for(metric in c("prevalence_pct","annual_oop_usd")) {
  z <- out[out$analysis=="detailed_age" & out$group==ins & out$metric==metric,]
  reference <- out[out$analysis=="detailed_age" & out$group %in% ins_labels[2:3] & out$metric==metric,]
- forest(z,paste0(z$age," (users ",z$unweighted_users,")"),paste(if(ins==ins_labels[2]) "Any private*" else "Public only",if(metric=="prevalence_pct") "| Use" else "| Self/family payments"),if(metric=="prevalence_pct") "Adults with recorded use (%)" else "Annual USD per user",reference)
+ forest(z,paste0(z$age," (users ",z$unweighted_users,")"),paste(if(ins==ins_labels[2]) "Any private" else "Public only",if(metric=="prevalence_pct") "| Use" else "| Self/family payments"),if(metric=="prevalence_pct") "Adults with recorded use (%)" else "Annual USD per user",reference)
 }
 mtext("Finer age groups retain precision gates",outer=TRUE,side=3,line=.4,font=2)
-mtext("MEPS 2024 | Points and 95% survey CIs | *Includes TRICARE and mixed private/public coverage.",outer=TRUE,side=1,line=.5,cex=.85)
-mtext("Withheld means insufficient sample size or precision; it is not zero.",outer=TRUE,side=1,line=1.6,cex=.85)
+mtext("MEPS 2024 | Points and 95% survey CIs | Private includes TRICARE and mixed coverage.",outer=TRUE,side=1,line=.5,cex=.85)
+mtext("Triangle = low precision. Withheld means insufficient sample size or precision; it is not zero.",outer=TRUE,side=1,line=1.6,cex=.85)
 invisible(dev.off())
 png("results/monthly-insurance.png",width=1900,height=1350,res=170)
 par(mfrow=c(2,2),mar=c(4,12,3,1),oma=c(3,0,2,0))
@@ -191,7 +186,7 @@ for(analysis in c("monthly_history","source_changes")) for(metric in c("prevalen
 }
 mtext("Monthly insurance histories and annual outcomes",outer=TRUE,side=3,line=.4,font=2)
 mtext("Monthly coverage is not uninterrupted daily coverage. Incomplete histories are audited separately.",outer=TRUE,side=1,line=.5,cex=.85)
-mtext("Source mix changes do not identify a plan switch within the same source. No purchase-month linkage.",outer=TRUE,side=1,line=1.6,cex=.85)
+mtext("Triangle = low precision. Source mix does not identify plan switches or purchase-specific coverage.",outer=TRUE,side=1,line=1.6,cex=.85)
 invisible(dev.off())
 png("results/payment-sources.png",width=1900,height=1000,res=170)
 par(mfrow=c(1,2),mar=c(4,10,3,1),oma=c(3,0,2,0))
@@ -201,6 +196,6 @@ for(metric in c("annual_payment_usd","payment_share_pct")) {
 }
 mtext("Who paid for the observed target medicines?",outer=TRUE,side=3,line=.4,font=2)
 mtext("MEPS edited/imputed payment sources; includes zero source payments among users. 95% survey CIs.",outer=TRUE,side=1,line=.5,cex=.85)
-mtext("A zero payment does not establish denied coverage. Sparse payer components are withheld.",outer=TRUE,side=1,line=1.6,cex=.85)
+mtext("Triangle = low precision. All users enter component estimates; positive-payer counts are diagnostic only.",outer=TRUE,side=1,line=1.6,cex=.85)
 invisible(dev.off())
 cat("Extension complete:",checks,"independent mean/ratio checks;",model_audit$status,"\n")

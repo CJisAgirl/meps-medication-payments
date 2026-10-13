@@ -37,4 +37,25 @@ check("degenerate proportions require review", {
   stopifnot(grepl("requires review",payment_precision("proportion",100,0,0,c(0,0),99)),
             all(is.na(payment_beta_ci(0,0,100,99))))
 })
+check("denominator boundary and exact RSE boundaries", {
+  stopifnot(payment_precision("mean",59,100,10,c(80,120),50)=="withheld: denominator n < 60",
+            payment_precision("mean",60,100,29.99,c(40,160),50)=="reportable",
+            payment_precision("mean",60,100,30,c(40,160),50)=="flagged: low precision",
+            payment_precision("mean",60,100,50,c(0,200),50)=="flagged: low precision",
+            payment_precision("mean",60,100,50.01,c(-1,201),50)=="withheld: RSE > 50%")
+})
+check("a dollar share is a ratio, not a rare-person proportion", {
+  stopifnot(payment_precision("ratio",800,.02,.012,c(.001,.05),100)=="withheld: RSE > 50%",
+            payment_precision("proportion",800,.02,.012,c(.001,.05),100)=="flagged: rare, low precision")
+})
+check("few positive contributors do not reject a supported mean", {
+  stopifnot(payment_precision("mean",800,100,20,c(60,140),100)=="reportable")
+})
+check("invalid uncertainty cannot pass a large denominator", {
+  stopifnot(payment_precision("mean",800,100,20,c(60,140),0)=="withheld: invalid uncertainty",
+            payment_precision("mean",800,100,20,c(110,140),100)=="withheld: invalid uncertainty")
+})
+check("flagged estimates remain visible", {
+  stopifnot(identical(precision_visible(c("reportable","flagged: low precision","withheld: denominator n < 60")),c(TRUE,TRUE,FALSE)))
+})
 cat("Payment helper tests:",count,"passed\n")

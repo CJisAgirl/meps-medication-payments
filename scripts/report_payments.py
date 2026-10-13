@@ -14,7 +14,7 @@ def show(row, digits=2):
         return 'Withheld: ' + row['status'].removeprefix('withheld: ')
     if row['status'].startswith('suppressed:'):
         return 'Withheld: ' + row['status'].removeprefix('suppressed: ')
-    suffix = ' [low precision]' if row['status'].startswith('flagged:') else ''
+    suffix = '*' if row['status'].startswith('flagged:') else ''
     return (f"{float(row['estimate']):,.{digits}f} "
             f"({float(row['lower_95']):,.{digits}f}–{float(row['upper_95']):,.{digits}f}){suffix}")
 
@@ -57,7 +57,7 @@ The population is adults with at least one recorded target-medicine purchase/rec
 | --- | ---: | ---: |
 {en_payers}
 
-Shares divide each source's weighted total by the weighted total from all sources. They are not the average of each person's copayment percentage. Component means include **all {audit['adult_users']} users**, including zeros from that source. Payers may overlap for one person. Existing payer rules are retained; TRICARE has 20 positive-payment users and is withheld. Do not rescale visible shares to 100% or add their confidence bounds.
+Shares divide each source's weighted total by the weighted total from all sources. They are not the average of each person's copayment percentage. Component means include **all {audit['adult_users']} users**, including zeros from that source. Payers may overlap for one person. Positive-payment counts are diagnostic, not reporting thresholds; TRICARE has 20 positive-payment users. All payer components use the same denominator and precision rules. An asterisk (*) marks limited precision, not statistical significance. Do not rescale visible shares to 100% or add their confidence bounds.
 
 These are edited/imputed survey payment records, not raw adjudicated claims or a measure of benefit eligibility. Payments exclude manufacturer rebates to payers. [Payment-source figure](payment-sources.png).
 
@@ -85,13 +85,13 @@ The five bands are mutually exclusive and include all {audit['adult_users']} use
 
 They describe **observed payment sources and the distribution of dollar payments among recorded users**. They do not identify people who did not obtain a medicine because of price, denial reasons, prescription-benefit terms, income-relative hardship, treatment effectiveness, or a causal effect of insurance. A lower mean in one insurance group would not by itself establish better coverage.
 
-Monthly insurance histories cannot be aligned to each refill's purchase month in these public files. Their unchanged results are now a [coverage-methods appendix](coverage-appendix.md), not evidence of purchase-specific reimbursement. Detailed ages and the age-only use model remain [supplementary analyses](extension-note.md).
+Monthly insurance histories cannot be aligned to each refill's purchase month in these public files. Their descriptive results are in a [coverage-methods appendix](coverage-appendix.md), not evidence of purchase-specific reimbursement. Detailed ages and the age-only use model remain [supplementary analyses](extension-note.md).
 
 ## Methods, checks and reproduction
 
-The [analysis methods](../METHODS.md#analysis-sequence) was written after prior results were seen and before the new distribution was estimated. This is not an original preregistration. Use the full stratified, clustered survey design, then the adult-user domain; mean/proportion SEs use Taylor linearization, proportions have beta CIs, and quantiles use inverse weighted CDFs with beta-Woodruff CIs. New mean/proportion rules use the relevant denominator and AHRQ precision categories; quantile support is assessed separately. Legacy results retain their earlier rules. No person is deleted because an estimate is withheld.
+The [analysis methods](../METHODS.md#analysis-sequence) was written after prior results were seen and before the new distribution was estimated. This is not an original preregistration. Use the full stratified, clustered survey design, then the adult-user domain; mean/proportion SEs use Taylor linearization, proportions have beta CIs, and quantiles use inverse weighted CDFs with beta-Woodruff CIs. All descriptive means, dollar ratios and person proportions use the relevant denominator (at least 60 people) and AHRQ precision categories: RSE below 30% is reportable, 30–50% is flagged with *, and above 50% is withheld. The rare-proportion exception applies only to person proportions, not dollar ratios. There is no separate 100-adult or 30-positive-payer requirement. Quantile support is assessed separately. No person is deleted because an estimate is withheld.
 
-The full run includes 16 Python tests and 8 R payment-helper tests; the new distribution has {audit['independent_mean_proportion_point_se_checks']} independent point/Taylor-SE checks, {audit['independent_interval_checks']} interval checks and {audit['independent_quantile_point_checks']} quantile point checks. Python independently checks weighted bands/quantiles, denominators and reconciliation. Original numerical estimates remain unchanged. See the [reproduction instructions](../README.md#reproduce).
+The full run includes 16 Python tests and 13 R payment-helper tests; the new distribution has {audit['independent_mean_proportion_point_se_checks']} independent point/Taylor-SE checks, {audit['independent_interval_checks']} interval checks and {audit['independent_quantile_point_checks']} quantile point checks. Python independently checks weighted bands/quantiles, denominators and reconciliation. The cohort, payment definitions, weighted point estimators and Taylor variances are unchanged; tables use the unified reporting criteria and descriptive person proportions use beta intervals. See the [reproduction instructions](../README.md#reproduce).
 
 
 [Distribution results](payment-distribution.csv) · [Distribution audit](payment-distribution-audit.json) · [Cross-output audit](payment-verification.json) · [Methods](../METHODS.md) · [Sources](../SOURCES.md)

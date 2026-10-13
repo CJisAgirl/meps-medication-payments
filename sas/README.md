@@ -38,7 +38,7 @@ The reference source files contain 19,140 person records and 204,550 prescriptio
 | `sas_mean_checks.csv` | Seven estimates and Taylor standard errors: adult prevalence, mean annual self/family payments and five payment-band percentages |
 | `inverse_cdf_checks.csv` | Median, 75th and 90th percentile points using the reference inverse weighted empirical CDF definition |
 | `user_means.csv` | Adult-user mean payments, record counts and payment-band proportions, with SAS confidence intervals |
-| `payer_shares.csv` | Ratios of weighted payment totals; sparse or imprecise components withheld under the existing payer gates |
+| `payer_shares.csv` | Ratios of weighted payment totals; all-user denominator of at least 60; RSE 30–50% flagged and above 50% withheld; contributor counts are diagnostic |
 | `native_quantiles.csv` | Native SAS survey quantiles and confidence intervals, for separate method review |
 
 The first two tables are checked using `PROC COMPARE` against embedded values generated from the saved R aggregate tables, with absolute tolerance `1e-6`. They compare point estimates and mean/proportion standard errors only. They do not establish equivalence of every confidence interval or payer estimate.

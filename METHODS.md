@@ -16,9 +16,13 @@ Annual amounts are nominal 2024 dollars. Zero, over zero through $100, over $100
 
 Use person weights PERWT24F, strata VARSTR and clustered PSUs VARPSU. Domain estimation retains the full survey structure. Means and ratio components use Taylor linearization with domain degrees of freedom. Main proportions use bounded beta intervals. Quantiles use the inverse weighted CDF and beta-Woodruff intervals; the reported interval-width standard error is an approximation.
 
-For the new means and proportions, require at least 60 users in the denominator, finite estimates and intervals, and positive design degrees of freedom. RSE below 30% is reportable, 30–50% is flagged, and above 50% is withheld; a rare-proportion exception flags an estimate when its upper confidence bound is at most 10%. Boundary estimates require review. Quantiles additionally require at least 30 observed users on each inclusive side of the point estimate and ordered finite bounds. Quantile support rules are project rules, not an AHRQ certification. No participant is removed simply because an estimate is withheld.
+## Reporting framework
 
-Payer-component and supplementary outputs retain their earlier gates: at least 100 adults, 30 users, RSE at most 30%, positive design degrees of freedom, and at least 30 positive contributors for a payer component. Withheld components are not zero; visible shares must not be rescaled to sum to 100%.
+All descriptive means, ratios and person proportions use one AHRQ-based reporting framework. Require at least 60 unweighted people in the relevant analysis denominator, positive survey-design degrees of freedom, and finite estimates and uncertainty. For observed-use proportions the denominator is adults; for conditional spending and payer amounts/ratios it is medication users, including zero payments. Positive-payer counts remain diagnostics, with no separate minimum. RSE below 30% is reportable; 30% through 50% is displayed with an asterisk; above 50% is withheld. Only person proportions can use the AHRQ rare-proportion exception (95% upper bound at most 10%, displayed with an asterisk). A payer share is a ratio of dollars and never uses that exception. Boundary/degenerate estimates require review. An asterisk indicates limited precision, not statistical significance. No records are removed because an estimate is withheld.
+
+Quantiles use the same minimum of 60 users, with finite ordered beta-Woodruff intervals and positive design degrees of freedom. They additionally require 30 observations on each inclusive side of the estimated quantile, a project-specific support check; no RSE divided by the quantile is used. This checks the support for a distribution threshold, not the number of people paid for by an insurer. It is not an AHRQ quantile requirement. Model convergence, rank, support and signed-contrast checks remain separate from descriptive reporting criteria.
+
+Source: [AHRQ precision guidelines](https://meps.ahrq.gov/survey_comp/precision_guidelines.shtml).
 
 ## Supplementary analyses
 
@@ -28,7 +32,15 @@ An age-only survey quasibinomial model uses a fixed natural age spline and annua
 
 ## Analysis sequence
 
-The initial use and annual-coverage analysis was specified before outcome estimation. The age and monthly-coverage follow-up followed inspection of initial results and cell counts. The main payment-distribution analysis followed those earlier results but was specified before estimating the new quantiles and bands. These follow-ups are not original preregistrations. Earlier numerical estimates and reporting gates are retained in the aggregate reference outputs; the main report focuses on payments because monthly coverage cannot answer purchase-specific reimbursement questions.
+The initial use and annual-coverage analysis was specified before outcome estimation. The age and monthly-coverage follow-up followed inspection of initial results and cell counts. The main payment-distribution analysis followed those earlier results but was specified before estimating the new quantiles and bands. These follow-ups are not original preregistrations. The 13 October 2026 revision harmonizes descriptive reporting rules across all current tables; prior versions remain in Git history. The cohort and point-estimation methods are unchanged; descriptive person-proportion intervals now consistently use beta intervals. This reporting revision followed inspection of earlier results and is not a preregistration; the main report focuses on payments because monthly coverage cannot answer purchase-specific reimbursement questions.
+
+### Reporting revision: 13 October 2026
+
+Current tables replace the earlier descriptive count gates with the shared framework above. This change was made after inspecting earlier results. The raw source fingerprints, cohort, medication definition, weighting and point-estimation formulas are unchanged. Previously displayed point estimates and Taylor standard errors agree with the prior version; all nine self/family distribution rows are unchanged. Descriptive prevalence intervals now use the same beta method as payment-band proportions.
+
+Four previously withheld base-table rows and 19 extension-table rows are now displayed; no previously displayed rows become withheld. Four base rows and 13 extension rows carry precision flags. These are result rows, not new people. TRICARE's overall payment share is now displayed (0.54%, 95% CI 0.24–0.85; RSE 28.59%), as is its all-user annual mean ($38.98, 95% CI $17.21–$60.76; RSE 28.25%). Its 20 positive-payment contributors remain a diagnostic count, while both estimates use the 800-user domain. The current reports and source code apply one descriptive policy; previous versions remain in Git history.
+
+The complete workflow passes 16 Python tests and 13 R helper cases, 71 base and 120 extension point/Taylor-SE checks, and the independent distribution and cross-output checks. The SAS source reflects the same continuous-ratio thresholds; the published outputs are produced by Python/SQL/R.
 
 ## Verification
 

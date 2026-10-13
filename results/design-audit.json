@@ -7,8 +7,10 @@
   "manual_point_and_taylor_se_checks": 71,
   "independent_checks": "PASS",
   "reportable_rows": 58,
-  "suppressed_rows": 17,
-  "ci_proportions": "logit, domain design df",
+  "flagged_rows": 4,
+  "suppressed_rows": 13,
+  "reporting_rule": "AHRQ MEPS descriptive precision; denominator n >= 60; no positive-contributor gate",
+  "ci_proportions": "beta, domain design df",
   "ci_means_ratios": "t, user-domain design df",
   "survey_version": "4.5",
   "R_version": "4.1.1"

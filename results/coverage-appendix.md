@@ -1,33 +1,32 @@
-# Appendix: what monthly insurance histories can and cannot establish
+# Appendix: monthly insurance histories
 
-**Historical exploratory results; not a purchase-specific coverage analysis.**
+These descriptive histories cannot date every refill or establish drug-specific reimbursement. Read the [main payment report](research-brief.md) for observed payment sources.
 
-The main study now focuses on [actual payment sources and user spending](research-brief.md). These categories describe insurance continuity, but cannot date every refill or establish drug-benefit eligibility. Sparse groups also limit comparisons. The original numerical estimates and people are retained, not discarded as invalid data.
+All descriptive means, ratios and person proportions use one AHRQ-based reporting framework. Require at least 60 unweighted people in the relevant analysis denominator, positive survey-design degrees of freedom, and finite estimates and uncertainty. For observed-use proportions the denominator is adults; for conditional spending and payer amounts/ratios it is medication users, including zero payments. Positive-payer counts remain diagnostics, with no separate minimum. RSE below 30% is reportable; 30% through 50% is displayed with an asterisk; above 50% is withheld. Only person proportions can use the AHRQ rare-proportion exception (95% upper bound at most 10%, displayed with an asterisk). A payer share is a ratio of dollars and never uses that exception. Boundary/degenerate estimates require review. An asterisk indicates limited precision, not statistical significance. No records are removed because an estimate is withheld.
 
-The legacy 30-user gate remains here for historical reproducibility. It is a project rule, not a mathematical boundary or a uniform AHRQ requirement. The new payment distribution uses estimand-specific rules documented in [payment methods](../METHODS.md#payment-distribution); changing a reporting rule cannot recover missing purchase dates.
+## Complete monthly histories
 
-## 2. Monthly histories, without inventing purchase dates
-
-Require all 12 INS monthly indicators to be explicitly yes/no. “Covered in every month” means coverage at some point in each month, not coverage on every day. “Some fully uninsured months” means 1–11 months with any coverage and at least one month without coverage. Out-of-scope and unknown values are never converted to uninsured. The complete-history restriction changes the analysis population.
-
-195 adults, including 2 users, have incomplete monthly histories and are excluded only from the complete-history comparisons. They remain in the original all-adult results. 195 incomplete histories include out-of-scope months. Uninsured-all-12 counts therefore differ from the original annual-category counts based on eligible months.
+All 12 monthly insurance indicators must be explicitly known. Coverage at some time in every month does not establish coverage on every day. Unknown and out-of-scope values are never converted to uninsured. 195 adults, including 2 users, have incomplete histories and are excluded only from these complete-history comparisons; they remain in the main cohort. 195 incomplete histories include out-of-scope months.
 
 | Monthly history | Sample users / adults | Observed use, % (95% CI) | Annual OOP per user, USD (95% CI) |
 | --- | ---: | ---: | ---: |
-| Covered in every month | 764 / 12686 | 5.68 (5.23–6.17) | 349 (288–409) |
-| Some fully uninsured months | 29 / 1194 | Withheld: user n < 30 | Withheld: user n < 30 |
-| Uninsured in all 12 months | 5 / 1051 | Withheld: user n < 30 | Withheld: user n < 30 |
+| Covered in every month | 764 / 12686 | 5.68 (5.22–6.17) | 349 (288–409) |
+| Some fully uninsured months | 29 / 1194 | 2.38 (1.32–3.92) | Withheld: denominator n < 60 |
+| Uninsured in all 12 months | 5 / 1051 | 0.52 (0.14–1.35)* | Withheld: denominator n < 60 |
 
-Among people covered in all 12 months, a second comparison uses the monthly combination of private, TRICARE/CHAMPVA, Medicare, Medicaid/SCHIP, VA and other public indicators. Multiple simultaneous sources are preserved. A changed combination does not necessarily mean a period without insurance, and a constant combination does not rule out changing plans within one source type. These are descriptive comparisons; health status and age may differ between groups.
+## Source combinations among people covered in every month
 
-| Source history among all-month-covered adults | Sample users / adults | Observed use, % (95% CI) | Annual OOP per user, USD (95% CI) |
+Preserve simultaneous private, TRICARE/CHAMPVA, Medicare, Medicaid/SCHIP, VA and other public sources. A changed combination is not necessarily a lapse in coverage, and a constant combination does not exclude a change of plan within one source type.
+
+| Source history | Sample users / adults | Observed use, % (95% CI) | Annual OOP per user, USD (95% CI) |
 | --- | ---: | ---: | ---: |
-| Same source mix each month | 661 / 11253 | 5.54 (5.05–6.08) | 357 (291–424) |
-| Source mix changed | 103 / 1433 | 6.96 (5.58–8.65) | 284 (163–405) |
+| Same source mix each month | 661 / 11253 | 5.54 (5.04–6.08) | 357 (291–424) |
+| Source mix changed | 103 / 1433 | 6.96 (5.51–8.66) | 284 (163–405) |
 
-![Monthly insurance and source histories](monthly-insurance.png)
+![Monthly insurance histories](monthly-insurance.png)
 
-**No month-of-purchase linkage is claimed.** PURCHRD identifies the survey round; RXBEGMM/RXBEGYRX identify first use and can be carried forward to subsequent records. They do not date every refill. Annual payments are not allocated evenly across months. No drug formulary, denial or unmet-need measure is inferred.
+Triangles and asterisks indicate limited precision. Withheld values are not zero. A use proportion can be displayed while the corresponding user-only spending mean is withheld because their denominators differ.
 
+PURCHRD identifies a survey round; RXBEGMM/RXBEGYRX identify first use and can carry forward across records. They cannot date every refill. Annual payments are not spread evenly across months. These results do not identify formularies, denials, unmet need or causal effects.
 
-Sources: [HC-256 insurance](https://meps.ahrq.gov/data_stats/download_data/pufs/h256/h256doc.shtml), [HC-254A timing](https://meps.ahrq.gov/data_stats/download_data/pufs/h254a/h254adoc.shtml).
+Sources: [HC-256 insurance](https://meps.ahrq.gov/data_stats/download_data/pufs/h256/h256doc.shtml), [HC-254A timing](https://meps.ahrq.gov/data_stats/download_data/pufs/h254a/h254adoc.shtml), [AHRQ precision](https://meps.ahrq.gov/survey_comp/precision_guidelines.shtml).

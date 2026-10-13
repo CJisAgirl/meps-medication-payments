@@ -1,7 +1,10 @@
 {
   "extension_rows": 122,
-  "reportable": 59,
-  "suppressed": 63,
+  "reportable": 65,
+  "flagged": 13,
+  "displayed": 78,
+  "suppressed": 44,
+  "reporting_rule": "AHRQ MEPS descriptive precision; denominator n >= 60; no positive-contributor gate",
   "independent_mean_ratio_checks": 120,
   "reporting_gate": "PASS",
   "age_adjustment": {

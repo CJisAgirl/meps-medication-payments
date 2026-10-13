@@ -1,6 +1,7 @@
 # Run from the heor-rwe directory. Install survey and jsonlite first.
 suppressPackageStartupMessages(library(survey))
 suppressPackageStartupMessages(library(jsonlite))
+source("scripts/payment_helpers.R")
 options(survey.lonely.psu = "fail", survey.adjust.domain.lonely = FALSE)
 p <- read.csv("data/processed/persons.csv", colClasses=c(DUPERSID="character"))
 p <- p[p$PERWT24F > 0, ]
@@ -26,14 +27,18 @@ checks <- 0L
 add_row <- function(drug, population, insurance, metric, n, users, estimate, se, ci, df) {
   estimate <- as.numeric(estimate); se <- as.numeric(se); ci <- as.numeric(ci)
   rse <- if (estimate != 0) abs(se/estimate) else Inf
-  reason <- if (n < 100) "suppressed: adult n < 100" else if (users < 30) "suppressed: user n < 30" else if (df < 1) "suppressed: design df < 1" else if (!is.finite(rse) || rse > .30) "suppressed: RSE > 30%" else "reportable"
+  kind <- if(metric=="prevalence_pct") "proportion" else if(metric=="oop_share_pct") "ratio" else "mean"
+  denominator <- if(kind=="proportion") n else users
+  scale <- if(metric %in% c("prevalence_pct","oop_share_pct")) 100 else 1
+  reason <- payment_precision(kind,denominator,estimate/scale,se/scale,ci/scale,df)
+  visible <- precision_visible(reason)
   rows[[length(rows)+1]] <<- data.frame(drug, population, insurance, metric,
-    unweighted_adults=n, unweighted_users=users,
-    estimate=if(reason=="reportable") estimate else NA_real_,
-    se=if(reason=="reportable") se else NA_real_,
-    lower_95=if(reason=="reportable") ci[1] else NA_real_,
-    upper_95=if(reason=="reportable") ci[2] else NA_real_,
-    rse=if(reason=="reportable") rse else NA_real_, design_df=df, status=reason)
+    unweighted_adults=n, unweighted_users=users, denominator_n=denominator,
+    estimate=if(visible) estimate else NA_real_,
+    se=if(visible) se else NA_real_,
+    lower_95=if(visible) ci[1] else NA_real_,
+    upper_95=if(visible) ci[2] else NA_real_,
+    rse=if(visible) rse else NA_real_, design_df=df, status=reason)
 }
 
 for (drug in c("primary", "semaglutide", "tirzepatide", "brand")) {
@@ -58,7 +63,7 @@ for (drug in c("primary", "semaglutide", "tirzepatide", "brand")) {
                 isTRUE(all.equal(as.numeric(SE(prev)), manual[[2]], tolerance=1e-8)))
       checks <- checks + 1L
       prev_ci <- c(NA_real_, NA_real_)
-      if(u > 0 && u < n) prev_ci <- as.numeric(confint(svyciprop(reformulate(v[1]), d, method="logit", df=degf(d))))
+      if(u > 0 && u < n) prev_ci <- as.numeric(confint(svyciprop(reformulate(v[1]), d, method="beta", df=degf(d))))
       add_row(drug,age_group,ins_label,"prevalence_pct",n,u,100*coef(prev),100*SE(prev),100*prev_ci,degf(d))
       if(u == 0) {
         for(metric in c("annual_oop_usd","annual_total_usd","annual_records","oop_share_pct"))
@@ -90,8 +95,9 @@ write_json(list(
   full_design_df=degf(design), adult_design_df=degf(adult),
   weighted_adult_population=sum(p$PERWT24F[p$AGELAST>=18]),
   manual_point_and_taylor_se_checks=checks, independent_checks="PASS",
-  reportable_rows=sum(results$status=="reportable"), suppressed_rows=sum(results$status!="reportable"),
-  ci_proportions="logit, domain design df", ci_means_ratios="t, user-domain design df",
+  reportable_rows=sum(results$status=="reportable"), flagged_rows=sum(startsWith(results$status,"flagged:")), suppressed_rows=sum(!precision_visible(results$status)),
+  reporting_rule="AHRQ MEPS descriptive precision; denominator n >= 60; no positive-contributor gate",
+  ci_proportions="beta, domain design df", ci_means_ratios="t, user-domain design df",
   survey_version=as.character(packageVersion("survey")),
   R_version=paste(R.version$major,R.version$minor,sep=".")
 ), "results/design-audit.json", pretty=TRUE, auto_unbox=TRUE, digits=10)
@@ -109,16 +115,16 @@ for(metric in c("prevalence_pct","annual_oop_usd")) {
   plot(NA, xlim=c(0,maximum), ylim=c(.5,3.5), yaxt="n", ylab="",
        xlab=if(metric=="prevalence_pct") "Adults with observed use (%)" else "Annual self/family payments per user (USD)",
        main=if(metric=="prevalence_pct") "Observed use in 2024" else "Out-of-pocket spending", bty="n")
-  axis(2,at=yy,labels=c("Any private*", "Public only", "Uninsured all year"),tick=FALSE)
+  axis(2,at=yy,labels=c("Any private", "Public only", "Uninsured all year"),tick=FALSE)
   abline(v=axTicks(1),col="#e6e9ee",lwd=.7)
-  ok <- z$status=="reportable"
+  ok <- precision_visible(z$status)
   segments(z$lower_95[ok],yy[ok],z$upper_95[ok],yy[ok],col="#187e85",lwd=2)
-  points(z$estimate[ok],yy[ok],pch=19,cex=1.3,col="#12555b")
-  if(any(!ok)) text(rep(maximum*.03,sum(!ok)),yy[!ok],labels=paste0("Suppressed (users n=",z$unweighted_users[!ok],")"),adj=0,cex=.8,col="#707783")
+  points(z$estimate[ok],yy[ok],pch=ifelse(startsWith(z$status[ok],"flagged:"),17,19),cex=1.3,col="#12555b")
+  if(any(!ok)) text(rep(maximum*.03,sum(!ok)),yy[!ok],labels="Withheld",adj=0,cex=.8,col="#707783")
 }
 mtext("GLP-1 receptor agonists and tirzepatide | US civilian noninstitutionalized adults",outer=TRUE,side=3,line=.2,cex=1.12,font=2)
 mtext("MEPS 2024 HC-256 + HC-254A. Points and 95% survey-design CIs. Unadjusted descriptions; not causal effects.",outer=TRUE,side=1,line=.4,cex=.8)
-mtext("*Includes TRICARE/CHAMPVA and mixed private/public coverage. Spending is conditional on observed use.",outer=TRUE,side=1,line=1.5,cex=.8)
+mtext("Private includes TRICARE/CHAMPVA and mixed coverage. Triangle = low precision. Spending is conditional on use.",outer=TRUE,side=1,line=1.5,cex=.8)
 invisible(dev.off())
 cat("Survey analysis complete:",checks,"independent estimate/SE checks passed.\n")
 print(results[results$drug=="primary" & results$population=="All adults" & results$metric %in% c("prevalence_pct","annual_oop_usd"),c("insurance","metric","unweighted_users","estimate","lower_95","upper_95","status")],row.names=FALSE)

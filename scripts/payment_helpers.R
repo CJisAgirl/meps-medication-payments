@@ -1,4 +1,4 @@
-# Estimand-specific rules for the all-user payment follow-up; see METHODS.md.
+# Shared descriptive reporting framework; see METHODS.md.
 payment_band <- function(x) {
   if(any(!is.finite(x) | x < 0)) stop("Payments must be finite and nonnegative")
   cut(x, c(-Inf,0,100,500,1000,Inf), right=TRUE,
@@ -16,6 +16,7 @@ weighted_inverse_cdf <- function(x, w, probability) {
 }
 
 payment_precision <- function(kind, n, estimate, se, ci, df) {
+  stopifnot(kind %in% c("mean", "ratio", "proportion"))
   if(n<60) return("withheld: denominator n < 60")
   if(df<1 || any(!is.finite(c(estimate,se,ci))) || se<0 ||
      ci[1]>estimate || ci[2]<estimate) return("withheld: invalid uncertainty")
@@ -43,3 +44,6 @@ payment_beta_ci <- function(estimate, se, n, df) {
   c(qbeta(.025,effective*estimate,effective*(1-estimate)+1),
     qbeta(.975,effective*estimate+1,effective*(1-estimate)))
 }
+
+# Flagged estimates remain visible; model-support failures remain withheld.
+precision_visible <- function(status) status=="reportable" | startsWith(status,"flagged:")

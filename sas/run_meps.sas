@@ -195,7 +195,7 @@ run;
 ods exclude none;
 %assert_no_errors;
 
-/* Apply the existing payer-component support/precision gates before export.
+/* Apply the shared descriptive precision framework before payer export.
    Contributor counts overlap across payers; users with zero payment stay in
    each ratio's denominator. Suppressed shares must never be rescaled. */
 data payer_positive;
@@ -222,15 +222,15 @@ data payer_report;
   if missing(contributors) then do;
     put 'ERROR: Payer output could not be matched to contributor counts.'; abort cancel;
   end;
-  if &n_adult < 100 then status='withheld: adult n < 100';
-  else if &n_users < 30 then status='withheld: user n < 30';
-  else if contributors<30 then status='withheld: positive-payer users < 30';
+  if &n_users < 60 then status='withheld: denominator n < 60';
   else if missing(DF) or DF<1 then status='withheld: design df < 1';
   else if nmiss(Ratio,StdErr)>0 or Ratio<=0 or StdErr<0 then
     status='withheld: invalid estimate or uncertainty';
-  else if abs(StdErr/Ratio)>.30 then status='withheld: RSE > 30%';
+  else if StdErr=0 then status='withheld: boundary estimate requires review';
+  else if abs(StdErr/Ratio)>.50 then status='withheld: RSE > 50%';
+  else if abs(StdErr/Ratio)>=.30 then status='flagged: low precision';
   estimate_pct=Ratio*100; se_pct=StdErr*100;
-  if status ne 'reportable' then call missing(estimate_pct,se_pct);
+  if substr(status,1,9)='withheld:' then call missing(estimate_pct,se_pct);
   /* CIs remain in local diagnostic ODS tables; their df convention differs. */
   keep Numerator Denominator contributors estimate_pct se_pct status;
 run;
