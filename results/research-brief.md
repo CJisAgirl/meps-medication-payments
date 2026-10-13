@@ -17,7 +17,7 @@ The population is adults with at least one recorded target-medicine purchase/rec
 | TRICARE | 0.54 (0.24–0.85) | 39 (17–61) |
 | Other sources | 1.16 (0.62–1.69) | 83 (45–120) |
 
-Shares divide each source's weighted total by the weighted total from all sources. They are not the average of each person's copayment percentage. Component means include **all 800 users**, including zeros from that source. Payers may overlap for one person. Positive-payment counts are diagnostic, not reporting thresholds; TRICARE has 20 positive-payment users. All payer components use the same denominator and precision rules. An asterisk (*) marks limited precision, not statistical significance. Do not rescale visible shares to 100% or add their confidence bounds.
+Payment shares are calculated as each source's survey-weighted total divided by total survey-weighted payments across all sources. They are not averages of individual payment percentages. Mean annual payments include **all 800 users**, including those with zero payments from a given source. Users may have payments from multiple sources.
 
 These are edited/imputed survey payment records, not raw adjudicated claims or a measure of benefit eligibility. Payments exclude manufacturer rebates to payers. [Payment-source figure](payment-sources.png).
 
